@@ -13,7 +13,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import (
-    get_demo_config_directory,
     get_simulation_configuration_filename,
     get_record_configuration,
     get_record_directory,
@@ -29,18 +28,18 @@ def launch_setup(context, *args, **kwargs):
 
     demo = LaunchConfiguration("demo").perform(context)
     demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
+    demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
+
     mode = LaunchConfiguration("mode").perform(context)
     record = LaunchConfiguration("record").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-
-    config_directory = get_demo_config_directory(demo)
 
     actions = []
 
     if mode == "simulation":
 
         simulation_configuration_filename = get_simulation_configuration_filename(
-            config_directory
+            demo_config_directory
         )
 
         actions.append(
@@ -64,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "robot_configuration_directory": config_directory,
+                "robot_configuration_directory": demo_config_directory,
             }.items(),
         )
     )
@@ -72,16 +71,16 @@ def launch_setup(context, *args, **kwargs):
     if record == "true":
 
         bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-        bag_record_cmd.extend(get_bag_topics(config_directory, mode))
+        bag_record_cmd.extend(get_bag_topics(demo_config_directory, mode))
 
-        record_configuration = get_record_configuration(config_directory)
+        record_configuration = get_record_configuration(demo_config_directory)
 
         record_directory = get_record_directory(
             record_configuration, demo, demo_timestamp
         )
 
         if record_configuration["config"] is True:
-            copytree(config_directory, record_directory + "/config")
+            copytree(demo_config_directory, record_directory + "/config")
 
         if record_configuration["vcs"] is True:
             repos_file = open(record_directory + "/demo.repos", "w")
@@ -103,6 +102,8 @@ def generate_launch_description():
     declared_arguments.append(DeclareLaunchArgument("demo"))
 
     declared_arguments.append(DeclareLaunchArgument("demo_timestamp"))
+
+    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
 
     declared_arguments.append(DeclareLaunchArgument("mode"))
 
