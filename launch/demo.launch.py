@@ -13,7 +13,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import (
-    get_simulation_configuration_filename,
+    get_simulation_configuration_file_path,
     get_record_configuration,
     get_record_directory,
     get_bag_topics,
@@ -38,7 +38,7 @@ def launch_setup(context, *args, **kwargs):
 
     if mode == "simulation":
 
-        simulation_configuration_filename = get_simulation_configuration_filename(
+        simulation_configuration_file_path = get_simulation_configuration_file_path(
             demo_config_directory
         )
 
@@ -50,7 +50,7 @@ def launch_setup(context, *args, **kwargs):
                 ),
                 launch_arguments={
                     "simulator_type": "gazebo",
-                    "simulation_configuration_filename": simulation_configuration_filename,
+                    "simulation_configuration_file_path": simulation_configuration_file_path,
                 }.items(),
             )
         )
@@ -63,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "robot_configuration_directory": demo_config_directory,
+                "robot_configuration_directory": demo_config_directory+"/robot",
             }.items(),
         )
     )
@@ -71,7 +71,7 @@ def launch_setup(context, *args, **kwargs):
     if record == "true":
 
         bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-        bag_record_cmd.extend(get_bag_topics(demo_config_directory, mode))
+        bag_record_cmd.extend(get_bag_topics(demo_config_directory+"/robot", mode))
 
         record_configuration = get_record_configuration(demo_config_directory)
 

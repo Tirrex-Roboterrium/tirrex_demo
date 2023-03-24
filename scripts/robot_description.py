@@ -4,10 +4,10 @@ import importlib
 import xml.etree.ElementTree as ET
 
 from tirrex_demo import (
-    get_base_meta_description_filename,
+    get_base_meta_description_file_path,
     get_available_devices,
     get_devices_meta_description,
-    get_device_meta_description_filename,
+    get_device_meta_description_file_path,
 )
 
 import romea_mobile_base_bringup
@@ -30,13 +30,13 @@ if __name__ == "__main__":
     robot_namespace = parameters["robot_namespace"]
     configuration_directory = parameters["robot_configuration_directory"]
 
-    base_meta_description_filename = get_base_meta_description_filename(
+    base_meta_description_file_path = get_base_meta_description_file_path(
         configuration_directory
     )
 
     urdf = ET.fromstring(
         romea_mobile_base_bringup.urdf_description(
-            robot_namespace, mode, base_meta_description_filename
+            robot_namespace, mode, base_meta_description_file_path
         )
     )
 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     for device_name in get_available_devices(devices, mode):
 
         device_type = devices[device_name]["type"]
-        device_meta_description_filename = get_device_meta_description_filename(
+        device_meta_description_file_path = get_device_meta_description_file_path(
             configuration_directory, devices, device_name
         )
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
             urdf.extend(
                 ET.fromstring(
                     device_bringup.urdf_description(
-                        robot_namespace, device_meta_description_filename
+                        robot_namespace, device_meta_description_file_path
                     )
                 )
             )

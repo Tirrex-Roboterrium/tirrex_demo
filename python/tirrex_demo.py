@@ -13,48 +13,48 @@ def get_demo_config_directory(demo_name):
     return get_package_share_directory(demo_name) + "/config"
 
 
-def get_base_meta_description_filename(robot_configuration_directory):
+def get_base_meta_description_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/base.yaml"
 
 
 def get_base_meta_description(robot_configuration_directory):
-    with open(get_base_meta_description_filename(robot_configuration_directory)) as f:
+    with open(get_base_meta_description_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_devices_meta_description_filename(robot_configuration_directory):
+def get_devices_meta_description_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/devices.yaml"
 
 
 def get_devices_meta_description(robot_configuration_directory):
-    with open(get_devices_meta_description_filename(robot_configuration_directory)) as f:
+    with open(get_devices_meta_description_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_teleop_configuration_filename(robot_configuration_directory):
+def get_teleop_configuration_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/teleop.yaml"
 
 
 def get_teleop_configuration(robot_configuration_directory):
-    with open(get_teleop_configuration_filename(robot_configuration_directory)) as f:
+    with open(get_teleop_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_simulation_configuration_filename(demo_configuration_directory):
+def get_simulation_configuration_file_path(demo_configuration_directory):
     return demo_configuration_directory + "/simulation.yaml"
 
 
 def get_simulation_configuration(robot_configuration_directory):
-    with open(get_simulation_configuration_filename(robot_configuration_directory)) as f:
+    with open(get_simulation_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_record_configuration_filename(robot_configuration_directory):
+def get_record_configuration_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/records.yaml"
 
 
 def get_record_configuration(robot_configuration_directory):
-    with open(get_record_configuration_filename(robot_configuration_directory)) as f:
+    with open(get_record_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
@@ -142,7 +142,7 @@ def get_replay_configuration(replay_directory):
         return yaml.safe_load(f)
 
 
-def get_device_meta_description_filename(robot_configuration_directory, devices, device_name):
+def get_device_meta_description_file_path(robot_configuration_directory, devices, device_name):
 
     device_type = devices[device_name]["type"]
 
@@ -158,7 +158,7 @@ def get_device_meta_description_filename(robot_configuration_directory, devices,
 
 def get_device_meta_description(robot_configuration_directory, devices, device_name):
 
-    device_config_yaml_file = get_device_meta_description_filename(
+    device_config_yaml_file = get_device_meta_description_file_path(
         robot_configuration_directory, devices, device_name
     )
 
@@ -235,10 +235,10 @@ def get_available_joystick(robot_configuration_directory, devices, mode):
     return available_joysticks[0]
 
 
-def get_joystick_meta_description_filename(robot_configuration_directory, mode):
+def get_joystick_meta_description_file_path(robot_configuration_directory, mode):
     devices = get_devices_meta_description(robot_configuration_directory)
     joystick_name = get_available_joystick(robot_configuration_directory, devices, mode)
-    return get_device_meta_description_filename(
+    return get_device_meta_description_file_path(
         robot_configuration_directory, devices, joystick_name
     )
 

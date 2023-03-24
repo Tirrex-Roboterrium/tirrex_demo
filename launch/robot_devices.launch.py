@@ -11,7 +11,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from tirrex_demo import (
     get_available_devices,
     get_devices_meta_description,
-    get_device_meta_description_filename,
+    get_device_meta_description_file_path,
 )
 
 from ament_index_python.packages import get_package_share_directory
@@ -37,7 +37,7 @@ def launch_setup(context, *args, **kwargs):
 
         if device_type != "joystick":
 
-            meta_description_filename = get_device_meta_description_filename(
+            meta_description_file_path = get_device_meta_description_file_path(
                 configuration_directory, devices, device_name
             )
 
@@ -51,7 +51,7 @@ def launch_setup(context, *args, **kwargs):
                     ),
                     launch_arguments={
                         "robot_namespace": robot_namespace,
-                        "meta_description_filename": meta_description_filename,
+                        "meta_description_file_path": meta_description_file_path,
                     }.items(),
                 )
             )
