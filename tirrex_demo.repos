@@ -1,0 +1,107 @@
+repositories:
+  romea_core/romea_common:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_common.git
+    version: devel
+  romea_core/romea_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_gps.git
+    version: devel
+  romea_core/romea_imu:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_imu.git
+    version: devel
+  romea_core/romea_lidar:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_lidar.git
+    version: devel
+  romea_core/romea_mobile_base:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_mobile_base.git
+    version: main
+
+  romea_ros2/interfaces/sensors/romea_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_gps.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_imu:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_imu.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_lidar:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_lidar.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_ublox_driver:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_ublox.git
+    version: main
+
+  romea_ros2/tools/romea_common:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_common.git
+    version: main
+  romea_ros2/tools/romea_cmd_mux:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/tools/romea_cmd_mux.git
+    version: main
+  romea_ros2/tools/romea_simulation:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/simulation/romea_simulation.git
+    version: main
+
+  romea_ros2/interfaces/teleoperation/romea_joy:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/teleoperation/romea_joy.git
+    version: main
+  romea_ros2/interfaces/teleoperation/romea_teleop:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/teleoperation/romea_teleop.git
+    version: main
+
+  romea_ros2/interfaces/vehicles/romea_mobile_base:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/romea_mobile_base.git
+    version: main
+  romea_ros2/interfaces/vehicles/adap2e:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/adap2e.git
+    version: main
+  romea_ros2/interfaces/vehicles/alpo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/alpo.git
+    version: main
+  romea_ros2/interfaces/vehicles/campero:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/campero.git
+    version: main
+  romea_ros2/interfaces/vehicles/robufast:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/robucar.git
+    version: main
+
+  romea_ros2/demos/tirrex/tirrex_demo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/tirrex_demo.git
+    version: main
+  romea_ros2/demos/tirrex/tirrex_adap2e:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/adap2e.git
+    version: main
+  romea_ros2/demos/tirrex/tirrex_alpo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/alpo.git
+    version: main
+  romea_ros2/demos/tirrex/tirrex_campero:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/campero.git
+    version: main
+  romea_ros2/demos/tirrex/tirrex_robufast:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/robufast.git
+    version: main
+
+  third_party/serial:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:jean.laneurit/serial-ros2.git
+    version: master
