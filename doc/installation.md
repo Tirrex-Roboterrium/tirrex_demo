@@ -1,4 +1,4 @@
-# 1 ROS2 Installation
+#  ROS2 Installation
 
 Galactic (ubuntu 20.04):
 
@@ -64,6 +64,8 @@ Aller dans la page settings de votre compte gitlab. Puis cliquer sur l'onglet *S
 
 ### 4.1 Workspace creation
 
+https://gitlab.irstea.fr/romea_projects/tirrex/tirrex_demo/-/blob/main/tirrex_demo.repos
+
 ```bash
 mkdir tirrex_ws
 cd tirrex_ws
@@ -71,31 +73,19 @@ mkdir src
 cd src
 vcs import < ../romea_tirrex.repos
 cd ..
-```
-
-### 4.2 Source ROS distro
-
-```bash
-source /opt/ros/galactic/setup.bash
-```
-
-or
-
-```bash
-`source /opt/ros/humble/setup.bash`
+rosdep install --from-paths src --ignore-src -r -y --ros-distro=galatic
 ```
 
 ### 4.3 Workspace compilation
 
-```
-rosdep install --from-paths src --ignore-src -r -y --ros-distro=galatic
-```
-
 ```bash
-colcond build 
+cd tirrex_ws
+source /opt/ros/ros2_distro/setup.bash
+export BUILD_WITH_LDMRS_SUPPORT="True"
+colcon build 
 ```
 
-or
+Where ros2_distro can be galactic or humble. It is possible to change the change number of thread used during compilation in using :
 
 ```shell
 colcon build -parallel-workers NUMBER
@@ -109,11 +99,26 @@ or
 
 
 
+### 4.4 Bridge compilation (Only under ubuntu 20.04)
+
+In order to use alpo and/or campero robot in live, their ros1 bridge must be compile
+
+```bash
+cd tirrex_ws
+source /opt/ros/ros2_distro/setup.bash
+source /opt/ros/noetic/setup.bash
+catkin build --packages-select alpo_bridge
+catkin build --packages-select campero_bridge
+```
+
+
+
 # 5 Usage
 
 Go to workspace 
 
 ```bash
+cd tirrex_ws
 source /opt/ros/galactic/setup.bash
 source  /usr/share/gazebo/setup.bash
 source install/setup.bash
@@ -149,3 +154,7 @@ where:
 - record parameter can be set to true or false 
 
 missing dependence plugins gazebo
+
+# 6 Visual Studio Code
+
+### 6.1 installation
