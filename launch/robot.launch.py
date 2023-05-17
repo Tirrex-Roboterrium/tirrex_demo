@@ -52,6 +52,7 @@ def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
+    robot_urdf_description = get_robot_urdf_description(context)
     configuration_directory = get_robot_configuration_directory(context)
 
     base_meta_description_file_path = get_base_meta_description_file_path(
@@ -68,7 +69,8 @@ def launch_setup(context, *args, **kwargs):
 
     robot = []
 
-    # print(get_robot_urdf_description(context))
+    print(get_robot_urdf_description(context))
+    print("robot_namespace", robot_namespace)
     if "replay" not in mode:
 
         robot.append(
@@ -81,7 +83,7 @@ def launch_setup(context, *args, **kwargs):
                     "mode": mode,
                     "robot_namespace": robot_namespace,
                     "meta_description_file_path": base_meta_description_file_path,
-                    "urdf_description": get_robot_urdf_description(context),
+                    "urdf_description": robot_urdf_description,
                 }.items(),
             )
         )
@@ -119,7 +121,7 @@ def launch_setup(context, *args, **kwargs):
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     get_package_share_directory("tirrex_demo")
-                    + "/launch/robot_devices.launch.py"
+                    + "/launch/robot_devices_drivers.launch.py"
                 ),
                 launch_arguments={
                     "robot_namespace": robot_namespace,
@@ -127,6 +129,21 @@ def launch_setup(context, *args, **kwargs):
                 }.items(),
             )
         )
+
+    robot.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("tirrex_demo")
+                + "/launch/robot_devices_controllers.launch.py"
+            ),
+            launch_arguments={
+                "mode": mode,
+                "robot_namespace": robot_namespace,
+                "robot_configuration_directory": configuration_directory,
+                "robot_urdf_description": robot_urdf_description,
+            }.items(),
+        )
+    )
 
     return robot
 
