@@ -15,20 +15,24 @@
 from launch import LaunchDescription
 
 from launch.actions import (
-    IncludeLaunchDescription,
     DeclareLaunchArgument,
     OpaqueFunction,
+    GroupAction
 )
 from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node, SetParameter, PushRosNamespace
+
+
+from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import (
     get_available_devices,
+    get_base_meta_description,
     get_devices_meta_description,
     get_device_meta_description_file_path,
 )
 
-from ament_index_python.packages import get_package_share_directory
+import yaml
 
 
 def get_mode(context):
@@ -49,39 +53,62 @@ def get_robot_urdf_description(context):
 
 def launch_setup(context, *args, **kwargs):
 
-    devices_controllers = []
-
+    mode = get_mode(context)
+    robot_namespace = get_robot_namespace(context)
     configuration_directory = get_robot_configuration_directory(context)
+    robot_urdf_description = LaunchConfiguration("urdf_description").perform(context)
+
+    use_sim_time = (mode == "simulation") or (mode == "replay")
+
+    base = get_base_meta_description(configuration_directory)
+    joint_states_source_list = [base["name"]+"/joint_states"]
+
     devices = get_devices_meta_description(configuration_directory)
+    for device_name in get_available_devices(devices, mode, "arm"):
 
-    for device_name in get_available_devices(devices, get_mode(context), "arm"):
-        print("coucou **************************************************************************")
-
-        print(device_name)
         meta_description_file_path = get_device_meta_description_file_path(
             configuration_directory, devices, device_name
         )
 
-        device_type = devices[device_name]["type"]
+        with open(meta_description_file_path) as f:
+            joint_states_source_list.append(yaml.safe_load(f)["name"]+"/joint_states")
 
-        devices_controllers.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    get_package_share_directory("romea_" + device_type + "_bringup")
-                    + "/launch/"
-                    + device_type
-                    + "_controllers.launch.py"
-                ),
-                launch_arguments={
-                    "mode": get_mode(context),
-                    "robot_namespace": get_robot_namespace(context),
-                    "robot_urdf_description": get_robot_urdf_description(context),
-                    "meta_description_file_path": meta_description_file_path,
-                }.items(),
-            )
+    robot_description = {"robot_description": robot_urdf_description}
+
+    joint_state_publisher = Node(
+        package="joint_state_publisher",
+        executable="joint_state_publisher",
+        parameters=[
+            {"source_list": joint_states_source_list},
+            {"rate": 100},
+            robot_description
+        ],
+        output={
+            'stdout': 'log',
+            'stderr': 'log',
+        },
+    )
+
+    robot_state_publisher = Node(
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        parameters=[robot_description],
+        output={
+            'stdout': 'log',
+            'stderr': 'log',
+        },
+    )
+
+    return [
+        GroupAction(
+            actions=[
+                SetParameter(name="use_sim_time", value=use_sim_time),
+                PushRosNamespace(robot_namespace),
+                joint_state_publisher,
+                robot_state_publisher,
+            ]
         )
-
-    return devices_controllers
+    ]
 
 
 def generate_launch_description():

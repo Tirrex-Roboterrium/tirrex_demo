@@ -71,6 +71,22 @@ def launch_setup(context, *args, **kwargs):
 
     print(get_robot_urdf_description(context))
     print("robot_namespace", robot_namespace)
+
+    if mode == "simulation":
+        robot.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("romea_simulation_bringup")
+                    + "/launch/entity.launch.py"
+                ),
+                launch_arguments={
+                    "simulator_type": "gazebo",
+                    "robot_namespace": robot_namespace,
+                    "robot_urdf_description": robot_urdf_description,
+                }.items(),
+            )
+        )
+
     if "replay" not in mode:
 
         robot.append(
@@ -101,6 +117,20 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
+        robot.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("tirrex_demo")
+                    + "/launch/robot_devices.launch.py"
+                ),
+                launch_arguments={
+                    "mode": mode,
+                    "robot_namespace": robot_namespace,
+                    "robot_configuration_directory": configuration_directory,
+                }.items(),
+            )
+        )
+
     robot.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -116,25 +146,11 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    if mode == "live":
-        robot.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo")
-                    + "/launch/robot_devices_drivers.launch.py"
-                ),
-                launch_arguments={
-                    "robot_namespace": robot_namespace,
-                    "robot_configuration_directory": configuration_directory,
-                }.items(),
-            )
-        )
-
     robot.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 get_package_share_directory("tirrex_demo")
-                + "/launch/robot_devices_controllers.launch.py"
+                + "/launch/robot_state_publisher.launch.py"
             ),
             launch_arguments={
                 "mode": mode,

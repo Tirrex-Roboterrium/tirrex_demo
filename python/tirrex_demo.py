@@ -216,7 +216,14 @@ def get_bag_topics(robot_configuration_directory, mode):
 
     base = get_base_meta_description(robot_configuration_directory)
     devices = get_devices_meta_description(robot_configuration_directory)
-    topics = get_topics(robot_prefix(base["name"]), base)
+
+    topics_prefix = device_prefix(
+        base.get("name"),
+        base.get("namespace"),
+        base.get("name")
+    )
+
+    topics = get_topics(topics_prefix, base)
 
     for device_name in get_available_devices(devices, mode):
 
