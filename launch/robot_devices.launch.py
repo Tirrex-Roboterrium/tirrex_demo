@@ -51,54 +51,31 @@ def launch_setup(context, *args, **kwargs):
     devices = get_devices_meta_description(configuration_directory)
 
     actions = []
-    if mode == "live":
-        for device_name in get_available_devices(devices, "live"):
-            device_type = devices[device_name]["type"]
 
-            if device_type != "joystick":
-
-                meta_description_file_path = get_device_meta_description_file_path(
-                    configuration_directory, devices, device_name
-                )
-
-                actions.append(
-                    IncludeLaunchDescription(
-                        PythonLaunchDescriptionSource(
-                            get_package_share_directory("romea_" + device_type + "_bringup")
-                            + "/launch/"
-                            + device_type
-                            + "_driver.launch.py"
-                        ),
-                        launch_arguments={
-                            "robot_namespace": robot_namespace,
-                            "meta_description_file_path": meta_description_file_path,
-                        }.items(),
-                    )
-                )
-
-    for device_name in get_available_devices(devices, mode, "arm"):
-
-        meta_description_file_path = get_device_meta_description_file_path(
-            configuration_directory, devices, device_name
-        )
-
+    for device_name in get_available_devices(devices, mode):
         device_type = devices[device_name]["type"]
 
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    get_package_share_directory("romea_" + device_type + "_bringup")
-                    + "/launch/"
-                    + device_type
-                    + "_controllers.launch.py"
-                ),
-                launch_arguments={
-                    "mode": get_mode(context),
-                    "robot_namespace": get_robot_namespace(context),
-                    "meta_description_file_path": meta_description_file_path,
-                }.items(),
+        if device_type != "joystick":
+
+            meta_description_file_path = get_device_meta_description_file_path(
+                configuration_directory, devices, device_name
             )
-        )
+
+            actions.append(
+                IncludeLaunchDescription(
+                    PythonLaunchDescriptionSource(
+                        get_package_share_directory("romea_" + device_type + "_bringup")
+                        + "/launch/"
+                        + device_type
+                        + ".launch.py"
+                    ),
+                    launch_arguments={
+                        "mode": mode,
+                        "robot_namespace": robot_namespace,
+                        "meta_description_file_path": meta_description_file_path,
+                    }.items(),
+                )
+            )
 
     return actions
 

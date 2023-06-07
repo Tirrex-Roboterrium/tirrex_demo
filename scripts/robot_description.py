@@ -77,17 +77,4 @@ if __name__ == "__main__":
                 )
             )
 
-    # set gazebo control at the end of the file because there's problem
-    # with plugin namespace if gazebo_ros2_control is first launched(i don't understand)
-    # index = list(urdf).index(urdf.find("ros2_control"))
-    # urdf.append(urdf[index])
-    # urdf.remove(urdf[index])
-    # urdf.append(urdf[index])
-    # urdf.remove(urdf[index])
-    # index = list(urdf).index(urdf.find("ros2_control"))
-    # urdf.append(urdf[index])
-    # urdf.remove(urdf[index])
-    # urdf.append(urdf[index])
-    # urdf.remove(urdf[index])
-
     print(ET.tostring(urdf, encoding="unicode"))
