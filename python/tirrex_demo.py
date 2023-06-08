@@ -40,7 +40,9 @@ def get_devices_meta_description_file_path(robot_configuration_directory):
 
 
 def get_devices_meta_description(robot_configuration_directory):
-    with open(get_devices_meta_description_file_path(robot_configuration_directory)) as f:
+    with open(
+        get_devices_meta_description_file_path(robot_configuration_directory)
+    ) as f:
         return yaml.safe_load(f)
 
 
@@ -58,7 +60,9 @@ def get_simulation_configuration_file_path(demo_configuration_directory):
 
 
 def get_simulation_configuration(robot_configuration_directory):
-    with open(get_simulation_configuration_file_path(robot_configuration_directory)) as f:
+    with open(
+        get_simulation_configuration_file_path(robot_configuration_directory)
+    ) as f:
         return yaml.safe_load(f)
 
 
@@ -155,7 +159,9 @@ def get_replay_configuration(replay_directory):
         return yaml.safe_load(f)
 
 
-def get_device_meta_description_file_path(robot_configuration_directory, devices, device_name):
+def get_device_meta_description_file_path(
+    robot_configuration_directory, devices, device_name
+):
 
     device_type = devices[device_name]["type"]
 
@@ -207,20 +213,18 @@ def get_topics(prefix, meta_description):
     topics = []
     for topic in configuration.keys():
         if configuration[topic] is True:
-            topics.append(bridge.get(topic, prefix+topic))
+            topics.append(bridge.get(topic, prefix + topic))
 
     return topics
 
 
-def get_bag_topics(robot_configuration_directory, mode):
+def get_bag_topics(robot_namespace, robot_configuration_directory, mode):
 
     base = get_base_meta_description(robot_configuration_directory)
     devices = get_devices_meta_description(robot_configuration_directory)
 
     topics_prefix = device_prefix(
-        base.get("name"),
-        base.get("namespace"),
-        base.get("name")
+        robot_namespace, base.get("namespace"), base.get("name")
     )
 
     topics = get_topics(topics_prefix, base)
@@ -232,9 +236,7 @@ def get_bag_topics(robot_configuration_directory, mode):
         )
 
         topics_prefix = device_prefix(
-            base.get("name"),
-            device.get("namespace"),
-            device.get("name")
+            robot_namespace, device.get("namespace"), device.get("name")
         )
 
         topics.extend(get_topics(topics_prefix, device))
@@ -250,7 +252,9 @@ def get_available_joystick(robot_configuration_directory, devices, mode):
         raise LookupError("A joystick must be added in devices configuration")
 
     if len(available_joysticks) >= 2:
-        raise LookupError("Only one joystick must be available in devices configuration")
+        raise LookupError(
+            "Only one joystick must be available in devices configuration"
+        )
 
     return available_joysticks[0]
 

@@ -85,7 +85,8 @@ def launch_setup(context, *args, **kwargs):
     if record == "true":
 
         bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-        bag_record_cmd.extend(get_bag_topics(demo_config_directory+"/robot", mode))
+        bag_record_cmd.extend(get_bag_topics(
+            robot_namespace, demo_config_directory+"/robot", mode))
 
         record_configuration = get_record_configuration(demo_config_directory)
 
