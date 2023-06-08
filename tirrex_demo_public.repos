@@ -1,0 +1,106 @@
+repositories:
+  romea_core/romea_common:
+    type: git
+    url: https://github.com/Romea/romea-core-common.git
+    version: main
+  romea_core/romea_gps:
+    type: git
+    url: https://github.com/Romea/romea-core-gps.git
+    version: main
+  romea_core/romea_imu:
+    type: git
+    url: https://github.com/Romea/romea-core-imu.git
+    version: main
+  romea_core/romea_lidar:
+    type: git
+    url: https://github.com/Romea/romea-core-lidar.git
+    version: main
+  romea_core/romea_mobile_base:
+    type: git
+    url: https://github.com/Romea/romea-core-mobile-base.git
+    version: main
+
+  romea_ros2/interfaces/sensors/romea_gps:
+    type: git
+    url: https://github.com/Romea/romea-ros2-gps.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_imu:
+    type: git
+    url: https://github.com/Romea/romea-ros2-imu.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_lidar:
+    type: git
+    url: https://github.com/Romea/romea-ros2-lidar.git
+    version: main
+  romea_ros2/interfaces/sensors/romea_ublox_driver:
+    type: git
+    url: https://github.com/Romea/romea-ros2-ublox-driver.git
+    version: main
+  romea_ros2/interfaces/manipulators/romea_arm:
+    type: git
+    url: https://github.com/Romea/romea-ros2-arm.git
+    version: main
+
+  romea_ros2/tools/romea_common:
+    type: git
+    url: https://github.com/Romea/romea-ros2-common.git
+    version: main
+  romea_ros2/tools/romea_cmd_mux:
+    type: git
+    url: https://github.com/Romea/romea-ros2-cmd_mux.git
+    version: main
+  romea_ros2/tools/romea_simulation:
+    type: git
+    url: https://github.com/Romea/romea-ros2-simulation.git
+    version: main
+
+  romea_ros2/interfaces/teleoperation/romea_joy:
+    type: git
+    url: https://github.com/Romea/romea-ros2-joy.git
+    version: main
+  romea_ros2/interfaces/teleoperation/romea_teleop:
+    type: git
+    url: https://github.com/Romea/romea-ros2-teleop.git
+    version: main
+
+  romea_ros2/interfaces/vehicles/romea_mobile_base:
+    type: git
+    url: https://github.com/Romea/romea-ros2-mobile-base.git
+    version: main
+  romea_ros2/interfaces/vehicles/adap2e:
+    type: git
+    url: https://github.com/Romea/adap2e
+    version: main
+
+  romea_ros2/demos/tirrex/tirrex_demo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/tirrex_demo.git
+    version: main
+
+  third_party/serial:
+    type: git
+    url: https://github.com/Romea/serial-ros2.git
+    version: romea
+
+  third_party/xsens_driver:
+    type: git
+    url: https://github.com/Romea/xsens_driver.git
+    version: romea
+
+  third_party/nmea_navsat_driver:
+    type: git
+    url: https://github.com/Romea/nmea_navsat_driver.git
+    version: romea
+
+  third_party/bluespace_ai_xsens_ros_mti_driver:
+    type: git
+    url: https://github.com/Romea/bluespace_ai_xsens_ros_mti_driver.git
+    version: romea
+
+  third_party/sick_ldmrs:
+    type: git
+    url: https://github.com/SICKAG/libsick_ldmrs.git
+
+  third_party/sick_scan:
+    type: git
+    url: https://github.com/SICKAG/sick_scan_xd
