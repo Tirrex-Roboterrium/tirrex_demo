@@ -3,11 +3,11 @@
 <package format="3">
   <name>tirrex_demo</name>
   <version>0.0.0</version>
-  <description>Package containing tools for launch tirrex demos.</description>
+  <description>Package containing tools for tirrex demos.</description>
 
   <maintainer email="jean.laneurit@inrae.fr">Jean Laneurit</maintainer>
 
-  <license>TODO</license>
+  <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
