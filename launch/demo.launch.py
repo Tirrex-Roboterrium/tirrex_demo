@@ -22,12 +22,12 @@ from launch.actions import (
     ExecuteProcess,
 )
 
+from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import (
-    get_simulation_configuration_file_path,
     get_record_configuration,
     get_record_directory,
     get_bag_topics,
@@ -52,19 +52,37 @@ def launch_setup(context, *args, **kwargs):
 
     if mode == "simulation":
 
-        simulation_configuration_file_path = get_simulation_configuration_file_path(
-            demo_config_directory
-        )
+        # wgs84_anchor_file_path = get_wgs84_anchor_file_path(
+        #     demo_config_directory
+        # )
+
+        # simulation_configuration_file_path = get_simulation_configuration_file_path(
+        #     demo_config_directory
+        # )
+
+        # actions.append(
+        #     IncludeLaunchDescription(
+        #         PythonLaunchDescriptionSource(
+        #             get_package_share_directory("romea_simulation_bringup")
+        #             + "/launch/simulator.launch.py"
+        #         ),
+        #         launch_arguments={
+        #             "simulator_type": "gazebo",
+        #             "wgs84_anchor_file_path": wgs84_anchor_file_path,
+        #             "simulation_configuration_file_path": simulation_configuration_file_path,
+        #         }.items(),
+        #     )
+        # )
 
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    get_package_share_directory("romea_simulation_bringup")
+                    get_package_share_directory("tirrex_demo")
                     + "/launch/simulator.launch.py"
                 ),
                 launch_arguments={
                     "simulator_type": "gazebo",
-                    "simulation_configuration_file_path": simulation_configuration_file_path,
+                    "demo_config_directory": demo_config_directory,
                 }.items(),
             )
         )
@@ -72,12 +90,25 @@ def launch_setup(context, *args, **kwargs):
     actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") + "/launch/robot.launch.py"
+                get_package_share_directory("tirrex_demo") + "/launch/robot/robot.launch.py"
             ),
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
                 "robot_configuration_directory": demo_config_directory+"/robot",
+            }.items(),
+        )
+    )
+
+    actions.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("tirrex_demo") + "/launch/robot/robot_localisation.launch.py"
+            ),
+            launch_arguments={
+                "mode": mode,
+                "robot_namespace": robot_namespace,
+                "demo_config_directory": demo_config_directory,
             }.items(),
         )
     )
@@ -106,6 +137,14 @@ def launch_setup(context, *args, **kwargs):
 
         bag_record_cmd.extend(["-o", record_directory + "/bag"])
         actions.append(ExecuteProcess(cmd=bag_record_cmd))
+
+    actions.append(
+        Node(
+            package="rqt_runtime_monitor",
+            executable="rqt_runtime_monitor",
+            name="monitor",
+        )
+    )
 
     return [GroupAction(actions)]
 

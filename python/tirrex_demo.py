@@ -39,10 +39,30 @@ def get_devices_meta_description_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/devices.yaml"
 
 
-def get_devices_meta_description(robot_configuration_directory):
+def get_devices_meta_description(demo_configuration_directory):
     with open(
-        get_devices_meta_description_file_path(robot_configuration_directory)
+        get_devices_meta_description_file_path(demo_configuration_directory)
     ) as f:
+        return yaml.safe_load(f)
+
+
+def get_wgs84_anchor_file_path(demo_configuration_directory):
+    return demo_configuration_directory + "/wgs84_anchor.yaml"
+
+
+def get_wgs84_anchor(robot_configuration_directory):
+    with open(
+        get_wgs84_anchor_file_path(robot_configuration_directory)
+    ) as f:
+        return yaml.safe_load(f)
+
+
+def get_localisation_configuration_file_path(demo_configuration_directory):
+    return demo_configuration_directory + "/localisation.yaml"
+
+
+def get_localisation_configuration(demo_configuration_directory):
+    with open(get_localisation_configuration_file_path(demo_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 

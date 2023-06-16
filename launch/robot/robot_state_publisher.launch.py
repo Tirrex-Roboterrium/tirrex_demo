@@ -58,8 +58,6 @@ def launch_setup(context, *args, **kwargs):
     configuration_directory = get_robot_configuration_directory(context)
     robot_urdf_description = LaunchConfiguration("urdf_description").perform(context)
 
-    use_sim_time = (mode == "simulation") or (mode == "replay")
-
     base = get_base_meta_description(configuration_directory)
     joint_states_source_list = [base["name"]+"/joint_states"]
 
@@ -102,7 +100,7 @@ def launch_setup(context, *args, **kwargs):
     return [
         GroupAction(
             actions=[
-                SetParameter(name="use_sim_time", value=use_sim_time),
+                SetParameter(name="use_sim_time", value=(mode != "live")),
                 PushRosNamespace(robot_namespace),
                 joint_state_publisher,
                 robot_state_publisher,

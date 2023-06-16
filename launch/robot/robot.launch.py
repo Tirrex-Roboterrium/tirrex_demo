@@ -69,8 +69,8 @@ def launch_setup(context, *args, **kwargs):
 
     robot = []
 
-    print(get_robot_urdf_description(context))
-    print("robot_namespace", robot_namespace)
+    # print(get_robot_urdf_description(context))
+    # print("robot_namespace", robot_namespace)
 
     if mode == "simulation":
         robot.append(
@@ -111,6 +111,7 @@ def launch_setup(context, *args, **kwargs):
                     + "/launch/joystick_driver.launch.py"
                 ),
                 launch_arguments={
+                    "mode": mode,
                     "robot_namespace": robot_namespace,
                     "meta_description_file_path": joystick_meta_description_file_path,
                 }.items(),
@@ -121,7 +122,7 @@ def launch_setup(context, *args, **kwargs):
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     get_package_share_directory("tirrex_demo")
-                    + "/launch/robot_devices.launch.py"
+                    + "/launch/robot/robot_devices.launch.py"
                 ),
                 launch_arguments={
                     "mode": mode,
@@ -138,6 +139,7 @@ def launch_setup(context, *args, **kwargs):
                 + "/launch/mobile_base_teleop.launch.py"
             ),
             launch_arguments={
+                "mode": mode,
                 "robot_namespace": robot_namespace,
                 "base_meta_description_file_path": base_meta_description_file_path,
                 "joystick_meta_description_file_path": joystick_meta_description_file_path,
@@ -150,7 +152,7 @@ def launch_setup(context, *args, **kwargs):
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 get_package_share_directory("tirrex_demo")
-                + "/launch/robot_state_publisher.launch.py"
+                + "/launch/robot/robot_state_publisher.launch.py"
             ),
             launch_arguments={
                 "mode": mode,
