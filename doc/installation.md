@@ -78,6 +78,8 @@ rosdep install --from-paths src --ignore-src -r -y --ros-distro=galatic
 
 ### 4.3 Workspace compilation
 
+add /usr/share/gazebo/setup.bash in ~/.bashrc
+
 ```bash
 cd tirrex_ws
 source /opt/ros/ros2_distro/setup.bash
