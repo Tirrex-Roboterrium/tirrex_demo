@@ -73,7 +73,7 @@ mkdir src
 cd src
 vcs import < ../romea_tirrex.repos
 cd ..
-rosdep install --from-paths src --ignore-src -r -y --ros-distro=galatic
+rosdep install -i --from-path src --rosdistro galactic -y -r 
 ```
 
 ### 4.3 Workspace compilation
