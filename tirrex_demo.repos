@@ -19,6 +19,14 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_core/romea_mobile_base.git
     version: main
+  romea_core/romea_filtering:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_filtering.git
+    version: devel
+  romea_core/romea_localisation:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_localisation.git
+    version: devel
 
   romea_ros2/interfaces/sensors/romea_gps:
     type: git
@@ -36,6 +44,31 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_ublox.git
     version: main
+
+  romea_ros2/algorithms/localisation/romea_localisation_msgs:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_msgs.git
+    version: devel
+  romea_ros2/algorithms/localisation/romea_localisation_utils:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_utils.git
+    version: devel
+  romea_ros2/algorithms/localisation/romea_localisation_odo:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_odo.git
+    version: devel
+  romea_ros2/algorithms/localisation/romea_localisation_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_gps.git
+    version: devel
+  romea_ros2/algorithms/localisation/romea_localisation_imu:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_imu.git
+    version: devel
+  romea_ros2/algorithms/localisation/romea_robot_to_world_localisation:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_robot_to_world_localisation.git
+    version: devel
 
   romea_ros2/tools/romea_common:
     type: git
@@ -120,12 +153,11 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/third_party/bluespace_ai_xsens_ros_mti_driver.git
     version: romea
-    
-  third_party/sick_ldmrs:  
+
+  third_party/sick_ldmrs:
     type: git
     url: https://github.com/SICKAG/libsick_ldmrs.git
 
-  third_party/sick_scan:  
+  third_party/sick_scan:
     type: git
     url: https://github.com/SICKAG/sick_scan_xd
-
