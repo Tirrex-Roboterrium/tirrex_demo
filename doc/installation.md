@@ -87,7 +87,7 @@ export BUILD_WITH_LDMRS_SUPPORT="True"
 colcon build 
 ```
 
-Where ros2_distro can be galactic or humble. It is possible to change the change number of thread used during compilation in using:
+Where `ros2_distro` can be galactic or humble. It is possible to change the change number of thread used during compilation in using:
 
 ```shell
 colcon build -parallel-workers NUMBER
@@ -109,8 +109,8 @@ In order to use alpo and/or campero robot in live, their ros1 bridge must be com
 cd tirrex_ws
 source /opt/ros/ros2_distro/setup.bash
 source /opt/ros/noetic/setup.bash
-catkin build --packages-select alpo_bridge
-catkin build --packages-select campero_bridge
+colcon build --packages-select alpo_bridge
+colcon build --packages-select campero_bridge
 ```
 
 
