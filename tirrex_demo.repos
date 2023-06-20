@@ -27,6 +27,14 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_core/romea_localisation.git
     version: devel
+  romea_core/romea_localisation_imu:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_localisation_imu.git
+    version: devel
+  romea_core/romea_localisation_gps:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_core/romea_localisation_gps.git
+    version: devel
 
   romea_ros2/interfaces/sensors/romea_gps:
     type: git
