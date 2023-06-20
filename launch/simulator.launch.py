@@ -29,14 +29,7 @@ from ament_index_python.packages import get_package_share_directory
 from tirrex_demo import (
     get_wgs84_anchor_file_path,
     get_simulation_configuration_file_path,
-    get_record_configuration,
-    get_record_directory,
-    get_bag_topics,
 )
-
-from shutil import copytree
-from os import getcwd
-import subprocess
 
 
 def launch_setup(context, *args, **kwargs):
