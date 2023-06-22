@@ -129,25 +129,25 @@ source install/setup.bash
 Launch a robot demo
 
 ```bash
-ros2 launch adap2e_bringup adap2e.launch.py mode:=simulation record:=false
+ros2 launch tirrex_adap2e adap2e.launch.py mode:=simulation record:=false
 ```
 
 or
 
 ```bash
-ros2 launch alpo_bringup alpo_launch.py mode:=simulation record:=false
+ros2 launch tirrex_alpo alpo_launch.py mode:=simulation record:=false
 ```
 
 or
 
 ```bash
-ros2 launch campero_bringup campero.launch.py mode:=simulation record:=false
+ros2 launch tirrex_campero campero.launch.py mode:=simulation record:=false
 ```
 
 or
 
 ```bash
-ros2 launch robufast_bringup robufast.launch.py mode:=simulation record:=false
+ros2 launch tirrex_robufast robufast.launch.py mode:=simulation record:=false
 ```
 
 where:
