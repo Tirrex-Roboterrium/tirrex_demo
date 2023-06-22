@@ -56,7 +56,7 @@ def launch_setup(context, *args, **kwargs):
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
     configuration_directory = get_robot_configuration_directory(context)
-    robot_urdf_description = LaunchConfiguration("urdf_description").perform(context)
+    robot_urdf_description = get_robot_urdf_description(context)
 
     base = get_base_meta_description(configuration_directory)
     joint_states_source_list = [base["name"]+"/joint_states"]

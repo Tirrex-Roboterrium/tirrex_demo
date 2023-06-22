@@ -26,6 +26,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import get_replay_configuration
+from os import getenv
 
 
 def get_replay_directory(context):
@@ -59,7 +60,10 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    bag_play_cmd = ["ros2", "bag", "play", replay_directory + "/bag", "--clock"]
+    bag_play_cmd = ["ros2", "bag", "play", replay_directory + "/bag"]
+    if launch_arguments["mode"] == "simulation" and getenv("ROS_DISTRO") != "galactic":
+        bag_play_cmd.append("--clock")
+
     actions.append(ExecuteProcess(cmd=bag_play_cmd))
 
     return [GroupAction(actions)]

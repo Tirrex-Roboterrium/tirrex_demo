@@ -34,7 +34,7 @@ from tirrex_demo import (
 )
 
 from shutil import copytree
-from os import getcwd
+from os import getcwd, getenv
 import subprocess
 
 
@@ -51,28 +51,6 @@ def launch_setup(context, *args, **kwargs):
     actions = []
 
     if mode == "simulation":
-
-        # wgs84_anchor_file_path = get_wgs84_anchor_file_path(
-        #     demo_config_directory
-        # )
-
-        # simulation_configuration_file_path = get_simulation_configuration_file_path(
-        #     demo_config_directory
-        # )
-
-        # actions.append(
-        #     IncludeLaunchDescription(
-        #         PythonLaunchDescriptionSource(
-        #             get_package_share_directory("romea_simulation_bringup")
-        #             + "/launch/simulator.launch.py"
-        #         ),
-        #         launch_arguments={
-        #             "simulator_type": "gazebo",
-        #             "wgs84_anchor_file_path": wgs84_anchor_file_path,
-        #             "simulation_configuration_file_path": simulation_configuration_file_path,
-        #         }.items(),
-        #     )
-        # )
 
         actions.append(
             IncludeLaunchDescription(
@@ -115,28 +93,20 @@ def launch_setup(context, *args, **kwargs):
 
     if record == "true":
 
-        bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-        bag_record_cmd.extend(get_bag_topics(
-            robot_namespace, demo_config_directory+"/robot", mode))
-
-        record_configuration = get_record_configuration(demo_config_directory)
-
-        record_directory = get_record_directory(
-            record_configuration, demo, demo_timestamp
+        actions.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("tirrex_demo") + "/launch/record.launch.py"
+                ),
+                launch_arguments={
+                    "demo": demo,
+                    "demo_timestamp": demo_timestamp,
+                    "demo_config_directory": demo_config_directory,
+                    "mode": mode,
+                    "robot_namespace": robot_namespace,
+                }.items(),
+            )
         )
-
-        if record_configuration["config"] is True:
-            copytree(demo_config_directory, record_directory + "/config")
-
-        if record_configuration["vcs"] is True:
-            repos_file = open(record_directory + "/demo.repos", "w")
-            subprocess.call(["vcs", "export", "--exact", getcwd()], stdout=repos_file)
-
-            diff_file = open(record_directory + "/demo.diff", "w")
-            subprocess.call(["vcs", "diff", getcwd()], stdout=diff_file)
-
-        bag_record_cmd.extend(["-o", record_directory + "/bag"])
-        actions.append(ExecuteProcess(cmd=bag_record_cmd))
 
     actions.append(
         Node(
@@ -160,6 +130,8 @@ def generate_launch_description():
     declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
 
     declared_arguments.append(DeclareLaunchArgument("mode"))
+
+    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
 
     declared_arguments.append(DeclareLaunchArgument("record", default_value="false"))
 
