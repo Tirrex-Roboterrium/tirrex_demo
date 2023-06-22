@@ -20,6 +20,10 @@ repositories:
     url: https://github.com/Romea/romea-core-mobile-base.git
     version: main
 
+  romea_ros2/interfaces/manipulators/romea_arm:
+    type: git
+    url: https://github.com/Romea/romea-ros2-arm.git
+    version: main
   romea_ros2/interfaces/sensors/romea_gps:
     type: git
     url: https://github.com/Romea/romea-ros2-gps.git
