@@ -78,18 +78,18 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    actions.append(
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") + "/launch/robot/robot_localisation.launch.py"
-            ),
-            launch_arguments={
-                "mode": mode,
-                "robot_namespace": robot_namespace,
-                "demo_config_directory": demo_config_directory,
-            }.items(),
-        )
-    )
+    # actions.append(
+    #     IncludeLaunchDescription(
+    #         PythonLaunchDescriptionSource(
+    #             get_package_share_directory("tirrex_demo") + "/launch/robot/robot_localisation.launch.py"
+    #         ),
+    #         launch_arguments={
+    #             "mode": mode,
+    #             "robot_namespace": robot_namespace,
+    #             "demo_config_directory": demo_config_directory,
+    #         }.items(),
+    #     )
+    # )
 
     if record == "true":
 
