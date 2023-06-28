@@ -185,7 +185,8 @@ def generate_launch_description():
             LaunchConfiguration("robot_namespace"),
             " robot_configuration_directory:",
             LaunchConfiguration("robot_configuration_directory"),
-        ]
+        ],
+        on_stderr="ignore"
     )
 
     declared_arguments.append(
