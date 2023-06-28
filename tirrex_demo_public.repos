@@ -78,7 +78,17 @@ repositories:
 
   romea_ros2/demos/tirrex/tirrex_demo:
     type: git
-    url: git@gitlab-ssh.irstea.fr:tirrex/tirrex_demo.git
+    url: https://github.com/Tirrex-Roboterrium/tirrex_demo.git
+    version: main
+
+  romea_ros2/demos/tirrex/tirrex_adap2e:
+    type: git
+    url: https://github.com/Tirrex-Roboterrium/tirrex_adap2e.git
+    version: main
+
+  romea_ros2/demos/tirrex/tirrex_robufast:
+    type: git
+    url: https://github.com/Tirrex-Roboterrium/tirrex_robufast.git
     version: main
 
   third_party/serial:
