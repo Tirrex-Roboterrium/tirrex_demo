@@ -75,6 +75,10 @@ repositories:
     type: git
     url: https://github.com/Romea/adap2e
     version: main
+  romea_ros2/interfaces/vehicles/robucar:
+    type: git
+    url: https://github.com/Romea/robucar
+    version: main
 
   romea_ros2/demos/tirrex/tirrex_demo:
     type: git
