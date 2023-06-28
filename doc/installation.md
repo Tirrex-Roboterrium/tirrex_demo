@@ -84,7 +84,8 @@ add /usr/share/gazebo/setup.bash in ~/.bashrc
 cd tirrex_ws
 source /opt/ros/ros2_distro/setup.bash
 export BUILD_WITH_LDMRS_SUPPORT="True"
-colcon build 
+colcon build --packages-skip sick_scan
+colcon build --packages-select sick_scan --cmake-args  -DSCANSEGMENT_XD=0
 ```
 
 Where `ros2_distro` can be galactic or humble. It is possible to change the change number of thread used during compilation in using:
