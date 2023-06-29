@@ -62,19 +62,28 @@ Aller dans la page settings de votre compte gitlab. Puis cliquer sur l'onglet *S
 
 # 4 Tirrex installation
 
-### 4.1 Workspace creation
+### 4.1 Workspace creation from github
 
-https://gitlab.irstea.fr/romea_projects/tirrex/tirrex_demo/-/blob/main/tirrex_demo.repos
 
 ```bash
 mkdir tirrex_ws
 cd tirrex_ws
 mkdir src
-cd src
-vcs import < ../romea_tirrex.repos
-cd ..
+curl -L https://github.com/Tirrex-Roboterrium/tirrex_demo/blob/main/tirrex_demo_public.repos\?raw\=true  > tirrex_demo_public.repos
+vcs import src < tirrex_demo_public.repos
 rosdep install -i --from-path src --rosdistro galactic -y -r 
 ```
+### 4.1 Workspace creation from gitlab
+
+```bash
+mkdir tirrex_ws
+cd tirrex_ws
+mkdir src
+curl --header "PRIVATE-TOKEN: <your_access_token>"  "https://gitlab.irstea.fr/api/v4/projects/2792/repository/files/tirrex_demo.repos/raw?ref=main"
+vcs import src < tirrex_demo.repos
+rosdep install -i --from-path src --rosdistro galactic -y -r 
+```
+
 
 ### 4.3 Workspace compilation
 
