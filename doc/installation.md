@@ -136,7 +136,7 @@ source /usr/share/gazebo/setup.bash
 source install/setup.bash
 ```
 
-Launch a robot demo
+Connect a joypad to PC (only xbox or dualshock4 are supported for the moment) and launch a robot demo
 
 ```bash
 ros2 launch tirrex_adap2e adap2e.launch.py mode:=simulation record:=false
@@ -164,6 +164,8 @@ where:
 
 - mode parameter can be set to simulation or live
 - record parameter can be set to true or false 
+
+To move the robot you need to keep your finger pressed on either the slow mode or turbo mode button and use the sticks to control the speed and direction of the robot, except for robufast. For robufast, the speed is controlled using the left and right triggers and the direction of each axles is controlled by sticks. You can find buttons and stciks configuration in config directory of romea_teleop_description package. 
 
 missing dependence plugins gazebo
 
