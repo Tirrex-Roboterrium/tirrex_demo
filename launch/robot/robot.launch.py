@@ -83,6 +83,7 @@ def launch_setup(context, *args, **kwargs):
                     "simulator_type": "gazebo",
                     "robot_namespace": robot_namespace,
                     "robot_urdf_description": robot_urdf_description,
+                    "meta_description_file_path": base_meta_description_file_path,
                 }.items(),
             )
         )
