@@ -195,6 +195,18 @@ def get_device_meta_description_file_path(
     )
 
 
+def get_devices_meta_description_file_paths(robot_config_directory, mode, type="all"):
+
+    devices_meta_description_file_paths = []
+    devices = get_devices_configuration(robot_config_directory)
+    for device_name in get_available_devices(devices, mode, type):
+        devices_meta_description_file_paths.append(
+            get_device_meta_description_file_path(robot_config_directory, devices, device_name)
+        )
+
+    return devices_meta_description_file_paths
+
+
 def get_device_meta_description(robot_configuration_directory, devices, device_name):
 
     device_config_yaml_file = get_device_meta_description_file_path(
