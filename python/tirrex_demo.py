@@ -35,13 +35,13 @@ def get_base_meta_description(robot_configuration_directory):
         return yaml.safe_load(f)
 
 
-def get_devices_meta_description_file_path(robot_configuration_directory):
+def get_devices_configuration_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/devices.yaml"
 
 
-def get_devices_meta_description(demo_configuration_directory):
+def get_devices_configuration(demo_configuration_directory):
     with open(
-        get_devices_meta_description_file_path(demo_configuration_directory)
+        get_devices_configuration_file_path(demo_configuration_directory)
     ) as f:
         return yaml.safe_load(f)
 
@@ -241,7 +241,7 @@ def get_topics(prefix, meta_description):
 def get_bag_topics(robot_namespace, robot_configuration_directory, mode):
 
     base = get_base_meta_description(robot_configuration_directory)
-    devices = get_devices_meta_description(robot_configuration_directory)
+    devices = get_devices_configuration(robot_configuration_directory)
 
     topics_prefix = device_prefix(
         robot_namespace, base.get("namespace"), base.get("name")
@@ -280,7 +280,7 @@ def get_available_joystick(robot_configuration_directory, devices, mode):
 
 
 def get_joystick_meta_description_file_path(robot_configuration_directory, mode):
-    devices = get_devices_meta_description(robot_configuration_directory)
+    devices = get_devices_configuration(robot_configuration_directory)
     joystick_name = get_available_joystick(robot_configuration_directory, devices, mode)
     return get_device_meta_description_file_path(
         robot_configuration_directory, devices, joystick_name

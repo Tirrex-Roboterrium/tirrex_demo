@@ -24,7 +24,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from tirrex_demo import (
     get_available_devices,
-    get_devices_meta_description,
+    get_devices_configuration,
     get_device_meta_description_file_path,
 )
 
@@ -48,7 +48,7 @@ def launch_setup(context, *args, **kwargs):
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
     configuration_directory = get_robot_configuration_directory(context)
-    devices = get_devices_meta_description(configuration_directory)
+    devices = get_devices_configuration(configuration_directory)
 
     actions = []
 

@@ -21,7 +21,7 @@ import xml.etree.ElementTree as ET
 from tirrex_demo import (
     get_base_meta_description_file_path,
     get_available_devices,
-    get_devices_meta_description,
+    get_devices_configuration,
     get_device_meta_description_file_path,
 )
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         )
     )
 
-    devices = get_devices_meta_description(configuration_directory)
+    devices = get_devices_configuration(configuration_directory)
     for device_name in get_available_devices(devices, mode):
 
         device_type = devices[device_name]["type"]

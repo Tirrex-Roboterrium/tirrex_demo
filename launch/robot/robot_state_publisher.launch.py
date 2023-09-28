@@ -28,7 +28,7 @@ from ament_index_python.packages import get_package_share_directory
 from tirrex_demo import (
     get_available_devices,
     get_base_meta_description,
-    get_devices_meta_description,
+    get_devices_configuration,
     get_device_meta_description_file_path,
 )
 
@@ -61,7 +61,7 @@ def launch_setup(context, *args, **kwargs):
     base = get_base_meta_description(configuration_directory)
     joint_states_source_list = [base["name"]+"/joint_states"]
 
-    devices = get_devices_meta_description(configuration_directory)
+    devices = get_devices_configuration(configuration_directory)
     for device_name in get_available_devices(devices, mode, "arm"):
 
         meta_description_file_path = get_device_meta_description_file_path(
