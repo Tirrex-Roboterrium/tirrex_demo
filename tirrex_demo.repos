@@ -57,6 +57,10 @@ repositories:
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/sensors/romea_ublox.git
     version: main
 
+  romea_ros2/algorithms/localisation/romea_localisation_bringup:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_bringup.git
+    version: devel
   romea_ros2/algorithms/localisation/romea_localisation_msgs:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_msgs.git
@@ -65,21 +69,21 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_utils.git
     version: devel
-  romea_ros2/algorithms/localisation/romea_localisation_odo:
+  romea_ros2/algorithms/localisation/romea_localisation_odo_plugin:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_odo.git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_odo_plugin.git
     version: devel
-  romea_ros2/algorithms/localisation/romea_localisation_gps:
+  romea_ros2/algorithms/localisation/romea_localisation_gps_plugin:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_gps.git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_gps_plugin.git
     version: devel
-  romea_ros2/algorithms/localisation/romea_localisation_imu:
+  romea_ros2/algorithms/localisation/romea_localisation_imu_plugin:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_imu.git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_localisation_imu_plugin.git
     version: devel
-  romea_ros2/algorithms/localisation/romea_robot_to_world_localisation:
+  romea_ros2/algorithms/localisation/romea_robot_to_world_localisation_core:
     type: git
-    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_robot_to_world_localisation.git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/algorithms/localisation/romea_robot_to_world_localisation_core.git
     version: devel
 
   romea_ros2/tools/romea_common:
