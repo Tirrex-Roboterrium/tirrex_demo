@@ -92,31 +92,31 @@ repositories:
 
   romea_ros2/algorithms/localisation/romea_localisation_bringup:
     type: git
-    url: https://github.com/Romea/romea-localisation-bringup.git
+    url: https://github.com/Romea/romea-ros2-localisation-bringup.git
     version: devel
   romea_ros2/algorithms/localisation/romea_localisation_msgs:
     type: git
-    url: https://github.com/Romea/romea-localisation-msgs.git
+    url: https://github.com/Romea/romea-ros2-localisation-msgs.git
     version: devel
   romea_ros2/algorithms/localisation/romea_localisation_utils:
     type: git
-    url: https://github.com/Romea/romea-localisation-utils.git
+    url: https://github.com/Romea/romea-ros2-localisation-utils.git
     version: devel
   romea_ros2/algorithms/localisation/romea_localisation_odo_plugin:
     type: git
-    url: https://github.com/Romea/romea-localisation-odo-plugin.git
+    url: https://github.com/Romea/romea-ros2-localisation-odo-plugin.git
     version: devel
   romea_ros2/algorithms/localisation/romea_localisation_gps_plugin:
     type: git
-    url: https://github.com/Romea/romea-localisation-gps-plugin.git
+    url: https://github.com/Romea/romea-ros2-localisation-gps-plugin.git
     version: devel
   romea_ros2/algorithms/localisation/romea_localisation_imu_plugin:
     type: git
-    url: https://github.com/Romea/romea-localisation-imu-plugin.git
+    url: https://github.com/Romea/romea-ros2-localisation-imu-plugin.git
     version: devel
   romea_ros2/algorithms/localisation/romea_robot_to_world_localisation_core:
     type: git
-    url: https://github.com/Romea/romea-robot-to-world-localisation-core.git
+    url: https://github.com/Romea/romea-ros2-robot-to-world-localisation-core.git
     version: devel
 
 
