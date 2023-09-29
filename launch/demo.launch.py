@@ -19,23 +19,12 @@ from launch.actions import (
     DeclareLaunchArgument,
     OpaqueFunction,
     GroupAction,
-    ExecuteProcess,
 )
 
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
-
-from tirrex_demo import (
-    get_record_configuration,
-    get_record_directory,
-    get_bag_topics,
-)
-
-from shutil import copytree
-from os import getcwd, getenv
-import subprocess
 
 
 def launch_setup(context, *args, **kwargs):
@@ -78,18 +67,18 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    # actions.append(
-    #     IncludeLaunchDescription(
-    #         PythonLaunchDescriptionSource(
-    #             get_package_share_directory("tirrex_demo") + "/launch/robot/robot_localisation.launch.py"
-    #         ),
-    #         launch_arguments={
-    #             "mode": mode,
-    #             "robot_namespace": robot_namespace,
-    #             "demo_config_directory": demo_config_directory,
-    #         }.items(),
-    #     )
-    # )
+    actions.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("tirrex_demo") + "/launch/robot/robot_localisation.launch.py"
+            ),
+            launch_arguments={
+                "mode": mode,
+                "robot_namespace": robot_namespace,
+                "demo_config_directory": demo_config_directory,
+            }.items(),
+        )
+    )
 
     if record == "true":
 
