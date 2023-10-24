@@ -102,6 +102,7 @@ def launch_setup(context, *args, **kwargs):
             package="rqt_runtime_monitor",
             executable="rqt_runtime_monitor",
             name="monitor",
+            arguments=['--force-discover'],
         )
     )
 
