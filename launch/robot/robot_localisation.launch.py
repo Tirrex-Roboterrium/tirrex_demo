@@ -38,7 +38,7 @@ def get_demo_config_directory(context):
 
 
 def get_robot_config_directory(context):
-    return get_demo_config_directory(context) + "/robot"
+    return LaunchConfiguration("robot_configuration_directory").perform(context)
 
 
 def get_wgs84_anchor_configuration_file_path(context):
@@ -91,6 +91,12 @@ def generate_launch_description():
     declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
 
     declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
+
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            "robot_configuration_directory",
+            default_value=LaunchConfiguration("demo_config_directory"),
+        ))
 
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]

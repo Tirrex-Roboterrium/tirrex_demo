@@ -16,7 +16,6 @@ import datetime
 import yaml
 import os
 
-from romea_common_bringup import robot_prefix
 from romea_common_bringup import device_prefix
 from ament_index_python.packages import get_package_share_directory
 from os.path import join
