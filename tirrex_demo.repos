@@ -120,6 +120,10 @@ repositories:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/alpo.git
     version: main
+  romea_ros2/interfaces/vehicles/ceol:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/ceol.git
+    version: main
   romea_ros2/interfaces/vehicles/campero:
     type: git
     url: git@gitlab-ssh.irstea.fr:romea_ros2/interfaces/vehicles/campero.git
@@ -152,6 +156,10 @@ repositories:
   romea_ros2/demos/tirrex/tirrex_alpo:
     type: git
     url: git@gitlab-ssh.irstea.fr:tirrex/alpo.git
+    version: main
+  romea_ros2/demos/tirrex/tirrex_ceol:
+    type: git
+    url: git@gitlab-ssh.irstea.fr:tirrex/ceol.git
     version: main
   romea_ros2/demos/tirrex/tirrex_campero:
     type: git
