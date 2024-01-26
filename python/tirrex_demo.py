@@ -218,8 +218,9 @@ def get_device_meta_description(robot_configuration_directory, devices, device_n
 
 def is_available_device(devices, mode, device_name, type):
     if type == "all" or devices[device_name]["type"] == type:
+
         return (
-            mode in devices[device_name]["available_mode"]
+            devices[device_name]["available_mode"] in mode
             or devices[device_name]["available_mode"] == "all"
         )
     else:

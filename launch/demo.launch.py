@@ -37,9 +37,12 @@ def launch_setup(context, *args, **kwargs):
     record = LaunchConfiguration("record").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
 
+    if mode == "simulation":
+        mode += "_gazebo_classic"
+
     actions = []
 
-    if mode == "simulation":
+    if mode == "simulation_gazebo_classic":
 
         actions.append(
             IncludeLaunchDescription(

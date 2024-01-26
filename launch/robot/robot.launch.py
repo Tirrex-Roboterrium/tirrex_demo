@@ -69,10 +69,10 @@ def launch_setup(context, *args, **kwargs):
 
     robot = []
 
-    # print(get_robot_urdf_description(context))
-    # print("robot_namespace", robot_namespace)
+    print(get_robot_urdf_description(context))
+    print("robot_namespace", robot_namespace)
 
-    if mode == "simulation":
+    if mode == "simulation_gazebo_classic":
         robot.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(

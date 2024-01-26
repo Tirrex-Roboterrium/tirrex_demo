@@ -37,10 +37,9 @@ if __name__ == "__main__":
         parameters[name] = value
 
     mode = parameters["mode"]
-    if "live" in mode:
-        mode = "live"
-    if "simulation" in mode:
-        mode = "simulation"
+
+    if "replay" in mode:
+        mode.replace("replay_", " ")
 
     robot_namespace = parameters["robot_namespace"]
     configuration_directory = parameters["robot_configuration_directory"]
