@@ -18,10 +18,9 @@ from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
-
 from tirrex_demo import (
     get_base_meta_description_file_path,
-    get_devices_meta_description_file_paths,
+    get_joystick_meta_description_file_path,
 )
 
 
@@ -45,41 +44,51 @@ def get_wgs84_anchor_configuration_file_path(context):
     return get_demo_config_directory(context) + "/wgs84_anchor.yaml"
 
 
-def get_localisation_configuration_file_path(context):
-    return get_robot_config_directory(context) + "/localisation.yaml"
+def get_path_following_configuration_file_path(context):
+    return get_robot_config_directory(context) + "/path_following.yaml"
+
+
+def get_trajectorty_file_path(context):
+    return (
+        get_demo_config_directory(context) + "/paths/" + LaunchConfiguration("trajectory_filename").perform(context)
+    )
 
 
 def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
-
     robot_namespace = get_robot_namespace(context)
     robot_config_directory = get_robot_config_directory(context)+"/robot"
 
+    trajectorty_file_path = get_trajectorty_file_path(context)
     wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
-    localisation_configuration_file_path = get_localisation_configuration_file_path(context)
-    base_meta_description_file_path = get_base_meta_description_file_path(robot_config_directory)
+    configuration_file_path = get_path_following_configuration_file_path(context)
 
-    sensors_meta_description_file_paths = str(
-        get_devices_meta_description_file_paths(robot_config_directory, mode)
+    mobile_base_meta_description_file_path = get_base_meta_description_file_path(
+        robot_config_directory
     )
 
-    localisation = IncludeLaunchDescription(
+    joystick_meta_description_file_path = get_joystick_meta_description_file_path(
+        robot_config_directory, mode
+    )
+
+    path_following = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            get_package_share_directory("romea_localisation_bringup")
-            + "/launch/robot_to_world_localisation.launch.py"
+            get_package_share_directory("romea_path_following")
+            + "/launch/path_following.launch.py"
         ),
         launch_arguments={
             "mode": mode,
             "robot_namespace": robot_namespace,
+            "trajectory_file_path": trajectorty_file_path,
+            "configuration_file_path": configuration_file_path,
+            "mobile_base_meta_description_file_path": mobile_base_meta_description_file_path,
+            "joystick_meta_description_file_path": joystick_meta_description_file_path,
             "wgs84_anchor_file_path": wgs84_anchor_file_path,
-            "localisation_configuration_file_path": localisation_configuration_file_path,
-            "base_meta_description_file_path": base_meta_description_file_path,
-            "sensors_meta_description_file_paths": sensors_meta_description_file_paths,
         }.items(),
     )
 
-    return [localisation]
+    return [path_following]
 
 
 def generate_launch_description():
@@ -90,10 +99,10 @@ def generate_launch_description():
 
     declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
 
+    declared_arguments.append(DeclareLaunchArgument("trajectory_filename"))
+
     declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
 
     declared_arguments.append(DeclareLaunchArgument("robot_config_directory"))
 
-    return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
-    )
+    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
