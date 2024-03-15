@@ -76,4 +76,4 @@ if __name__ == "__main__":
                 )
             )
 
-    # print(ET.tostring(urdf, encoding="unicode"))
+    print(ET.tostring(urdf, encoding="unicode"))
