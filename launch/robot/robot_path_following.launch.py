@@ -58,8 +58,7 @@ def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
-    robot_config_directory = get_robot_config_directory(context)+"/robot"
-
+    robot_config_directory = get_robot_config_directory(context)
     trajectorty_file_path = get_trajectorty_file_path(context)
     wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
     configuration_file_path = get_path_following_configuration_file_path(context)

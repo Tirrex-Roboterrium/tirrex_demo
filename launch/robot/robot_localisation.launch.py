@@ -54,8 +54,7 @@ def launch_setup(context, *args, **kwargs):
     mode = get_mode(context)
 
     robot_namespace = get_robot_namespace(context)
-    robot_config_directory = get_robot_config_directory(context)+"/robot"
-
+    robot_config_directory = get_robot_config_directory(context)
     wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
     localisation_configuration_file_path = get_localisation_configuration_file_path(context)
     base_meta_description_file_path = get_base_meta_description_file_path(robot_config_directory)

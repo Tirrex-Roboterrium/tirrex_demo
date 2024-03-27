@@ -62,7 +62,7 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "robot_configuration_directory": robot_config_directory+"/robot",
+                "robot_configuration_directory": robot_config_directory, 
             }.items(),
         )
     )
