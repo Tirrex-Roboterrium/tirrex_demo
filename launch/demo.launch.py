@@ -32,11 +32,12 @@ def launch_setup(context, *args, **kwargs):
     demo = LaunchConfiguration("demo").perform(context)
     demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
     demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
+    robot_config_directory = demo_config_directory + '/robot'
 
     mode = LaunchConfiguration("mode").perform(context)
     record = LaunchConfiguration("record").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    # localisation = LaunchConfiguration("localisation").perform(context)
+    localisation = LaunchConfiguration("localisation").perform(context)
 
     if mode == "simulation":
         mode += "_gazebo_classic"
@@ -66,26 +67,26 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "robot_configuration_directory": demo_config_directory+"/robot",
+                "robot_configuration_directory": robot_config_directory,
             }.items(),
         )
     )
 
-    # if localisation == "true":
-    #     actions.append(
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(
-    #                 get_package_share_directory("tirrex_demo")
-    #                 + "/launch/robot/robot_localisation.launch.py"
-    #             ),
-    #             launch_arguments={
-    #                 "mode": mode,
-    #                 "robot_namespace": robot_namespace,
-    #                 "demo_config_directory": demo_config_directory,
-    #                 "robot_config_directory": demo_config_directory,
-    #             }.items(),
-    #         )
-    #     )
+    if localisation == "true":
+        actions.append(
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    get_package_share_directory("tirrex_demo")
+                    + "/launch/robot/robot_localisation.launch.py"
+                ),
+                launch_arguments={
+                    "mode": mode,
+                    "robot_namespace": robot_namespace,
+                    "demo_config_directory": demo_config_directory,
+                    "robot_config_directory": robot_config_directory,
+                }.items(),
+            )
+        )
 
     if record == "true":
 
@@ -130,7 +131,7 @@ def generate_launch_description():
 
     declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
 
-    # declared_arguments.append(DeclareLaunchArgument("localisation", default_value="true"))
+    declared_arguments.append(DeclareLaunchArgument("localisation", default_value="true"))
 
     declared_arguments.append(DeclareLaunchArgument("record", default_value="false"))
 
