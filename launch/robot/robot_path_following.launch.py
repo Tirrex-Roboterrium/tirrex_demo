@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
@@ -25,41 +27,42 @@ from tirrex_demo import (
 
 
 def get_mode(context):
-    return LaunchConfiguration("mode").perform(context)
+    return LaunchConfiguration('mode').perform(context)
 
 
 def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
+    return LaunchConfiguration('robot_namespace').perform(context)
 
 
 def get_demo_config_directory(context):
-    return LaunchConfiguration("demo_config_directory").perform(context)
+    return LaunchConfiguration('demo_config_directory').perform(context)
 
 
 def get_robot_config_directory(context):
-    return LaunchConfiguration("robot_config_directory").perform(context)
+    return LaunchConfiguration('robot_config_directory').perform(context)
 
 
 def get_wgs84_anchor_configuration_file_path(context):
-    return get_demo_config_directory(context) + "/wgs84_anchor.yaml"
+    return os.path.join(get_demo_config_directory(context), 'wgs84_anchor.yaml')
 
 
 def get_path_following_configuration_file_path(context):
-    return get_robot_config_directory(context) + "/path_following.yaml"
+    return os.path.join(get_robot_config_directory(context), 'path_following.yaml')
 
 
-def get_trajectorty_file_path(context):
-    return (
-        get_demo_config_directory(context) + "/paths/" + LaunchConfiguration("trajectory_filename").perform(context)
+def get_trajectory_file_path(context):
+    return os.path.join(
+        get_demo_config_directory(context),
+        'paths',
+        LaunchConfiguration('trajectory_filename').perform(context),
     )
 
 
 def launch_setup(context, *args, **kwargs):
-
     mode = get_mode(context)
     robot_namespace = get_robot_namespace(context)
     robot_config_directory = get_robot_config_directory(context)
-    trajectorty_file_path = get_trajectorty_file_path(context)
+    trajectory_file_path = get_trajectory_file_path(context)
     wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
     configuration_file_path = get_path_following_configuration_file_path(context)
 
@@ -73,17 +76,16 @@ def launch_setup(context, *args, **kwargs):
 
     path_following = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            get_package_share_directory("romea_path_following")
-            + "/launch/path_following.launch.py"
+            get_package_share_directory('romea_path_following') + '/launch/path_following.launch.py'
         ),
         launch_arguments={
-            "mode": mode,
-            "robot_namespace": robot_namespace,
-            "trajectory_file_path": trajectorty_file_path,
-            "configuration_file_path": configuration_file_path,
-            "mobile_base_meta_description_file_path": mobile_base_meta_description_file_path,
-            "joystick_meta_description_file_path": joystick_meta_description_file_path,
-            "wgs84_anchor_file_path": wgs84_anchor_file_path,
+            'mode': mode,
+            'robot_namespace': robot_namespace,
+            'trajectory_file_path': trajectory_file_path,
+            'configuration_file_path': configuration_file_path,
+            'mobile_base_meta_description_file_path': mobile_base_meta_description_file_path,
+            'joystick_meta_description_file_path': joystick_meta_description_file_path,
+            'wgs84_anchor_file_path': wgs84_anchor_file_path,
         }.items(),
     )
 
@@ -91,17 +93,11 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("trajectory_filename"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_config_directory"))
-
+    declared_arguments = [
+        DeclareLaunchArgument('mode'),
+        DeclareLaunchArgument('robot_namespace'),
+        DeclareLaunchArgument('trajectory_filename'),
+        DeclareLaunchArgument('demo_config_directory'),
+        DeclareLaunchArgument('robot_config_directory'),
+    ]
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

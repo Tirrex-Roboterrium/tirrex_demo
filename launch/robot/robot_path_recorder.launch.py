@@ -20,36 +20,34 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
+    return LaunchConfiguration('robot_namespace').perform(context)
 
 
 def get_demo_config_directory(context):
-    return LaunchConfiguration("demo_config_directory").perform(context)
+    return LaunchConfiguration('demo_config_directory').perform(context)
 
 
 def get_wgs84_anchor_configuration_file_path(context):
-    return get_demo_config_directory(context) + "/wgs84_anchor.yaml"
+    return get_demo_config_directory(context) + '/wgs84_anchor.yaml'
 
 
-def get_trajectorty_file_path(context):
-    return LaunchConfiguration("trajectory_filename").perform(context)
+def get_trajectory_file_path(context):
+    return LaunchConfiguration('trajectory_filename').perform(context)
 
 
 def launch_setup(context, *args, **kwargs):
-
     robot_namespace = get_robot_namespace(context)
-    trajectorty_file_path = get_trajectorty_file_path(context)
+    trajectory_file_path = get_trajectory_file_path(context)
     wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
 
     path_recorder = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            get_package_share_directory("romea_path_following")
-            + "/launch/path_recorder.launch.py"
+            get_package_share_directory('romea_path_following') + '/launch/path_recorder.launch.py'
         ),
         launch_arguments={
-            "robot_namespace": robot_namespace,
-            "trajectory_file_path": trajectorty_file_path,
-            "wgs84_anchor_file_path": wgs84_anchor_file_path,
+            'robot_namespace': robot_namespace,
+            'trajectory_file_path': trajectory_file_path,
+            'wgs84_anchor_file_path': wgs84_anchor_file_path,
         }.items(),
     )
 
@@ -57,13 +55,9 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("trajectory_filename"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
+    declared_arguments = [
+        DeclareLaunchArgument('robot_namespace'),
+        DeclareLaunchArgument('trajectory_filename'),
+        DeclareLaunchArgument('demo_config_directory'),
+    ]
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
