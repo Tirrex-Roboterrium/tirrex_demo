@@ -56,8 +56,8 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
     declared_arguments = [
-        DeclareLaunchArgument('robot_namespace'),
-        DeclareLaunchArgument('trajectory_filename'),
         DeclareLaunchArgument('demo_config_directory'),
+        DeclareLaunchArgument('robot_namespace', default_value='robot'),
+        DeclareLaunchArgument('trajectory_filename'),
     ]
     return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])

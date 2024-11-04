@@ -14,7 +14,7 @@
 
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
@@ -82,16 +82,13 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_config_directory"))
+    declared_arguments = [
+        DeclareLaunchArgument("demo_config_directory"),
+        DeclareLaunchArgument("mode", default_value="simulation_gazebo_classic"),
+        DeclareLaunchArgument("robot_namespace", default_value="robot"),
+        DeclareLaunchArgument("robot_config_directory", default_value=PathJoinSubstitution(
+            [LaunchConfiguration("demo_config_directory"), "robot"])),
+    ]
 
     return LaunchDescription(
         declared_arguments + [OpaqueFunction(function=launch_setup)]
