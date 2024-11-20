@@ -91,7 +91,7 @@ def generate_launch_description():
 
     declared_arguments.append(
         DeclareLaunchArgument(
-            "robot_configuration_directory",
+            "robot_config_directory",
             default_value=LaunchConfiguration("demo_config_directory"),
         )
     )
