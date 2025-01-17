@@ -22,7 +22,7 @@ from launch.actions import (
 )
 
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
@@ -80,22 +80,29 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(
+    entities = [
         DeclareLaunchArgument(
-            "robot_config_directory",
-            default_value=LaunchConfiguration("demo_config_directory"),
-        )
-    )
-
-    return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
-    )
+            'demo_config_directory',
+            description='directory containing the YAML file to configure the simulation',
+        ),
+        DeclareLaunchArgument(
+            'robot_config_directory',
+            default_value=PathJoinSubstitution(
+                [LaunchConfiguration('demo_config_directory'), 'robot']
+            ),
+            description='directory containing the YAML file to configure the spawned robot',
+        ),
+        DeclareLaunchArgument(
+            'robot_namespace',
+            description='ROS namespace used for the robot',
+            default_value="robot",
+        ),
+        DeclareLaunchArgument(
+            'mode',
+            default_value='simulation_gazebo_classic',
+            description='used to select the context and nodes to start',
+            choices=['simulation_gazebo_classic', 'simulation', 'live', 'replay'],
+        ),
+        OpaqueFunction(function=launch_setup),
+    ]
+    return LaunchDescription(entities)
