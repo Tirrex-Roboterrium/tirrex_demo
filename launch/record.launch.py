@@ -13,27 +13,19 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-
-from launch.actions import TimerAction
-
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.actions import (
-    IncludeLaunchDescription,
     DeclareLaunchArgument,
     OpaqueFunction,
-    GroupAction,
     ExecuteProcess,
+    TimerAction,
 )
-
-from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
 
 from tirrex_demo import (
     get_record_configuration,
     get_record_directory,
     get_bag_topics,
+    get_demo_timestamp,
 )
 
 from shutil import copytree
@@ -42,19 +34,18 @@ import subprocess
 
 
 def launch_setup(context, *args, **kwargs):
-
     demo = LaunchConfiguration("demo").perform(context)
     demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
     demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
+    robot_config_directory = LaunchConfiguration("robot_config_directory").perform(context)
 
     mode = LaunchConfiguration("mode").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
 
     bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-    bag_record_cmd.extend(get_bag_topics(
-        robot_namespace, demo_config_directory+"/robot", mode))
+    bag_record_cmd.extend(get_bag_topics(robot_namespace, robot_config_directory, mode))
 
-    if mode == "simulation":
+    if mode.startswith("simulation"):
         if getenv("ROS_DISTRO") == "galactic":
             bag_record_cmd.append("/clock")
         else:
@@ -63,9 +54,7 @@ def launch_setup(context, *args, **kwargs):
     print(bag_record_cmd)
     record_configuration = get_record_configuration(demo_config_directory)
 
-    record_directory = get_record_directory(
-        record_configuration, demo, demo_timestamp
-    )
+    record_directory = get_record_directory(record_configuration, demo, demo_timestamp)
 
     if record_configuration["config"] is True:
         copytree(demo_config_directory, record_directory + "/config")
@@ -81,27 +70,45 @@ def launch_setup(context, *args, **kwargs):
     recorder = ExecuteProcess(cmd=bag_record_cmd)
 
     return [
-        TimerAction(
-            actions=[recorder], period=10.0),
+        TimerAction(actions=[recorder], period=10.0),
     ]
 
     # return [recorder]
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("demo"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_timestamp"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
-    )
+    entities = [
+        DeclareLaunchArgument(
+            "demo_config_directory",
+            description="directory containing the YAML file to configure the simulation",
+        ),
+        DeclareLaunchArgument(
+            "robot_config_directory",
+            default_value=PathJoinSubstitution(
+                [LaunchConfiguration("demo_config_directory"), "robot"]
+            ),
+            description="directory containing the YAML file to configure the spawned robot",
+        ),
+        DeclareLaunchArgument(
+            "robot_namespace",
+            description="ROS namespace used for the robot",
+            default_value="robot",
+        ),
+        DeclareLaunchArgument(
+            "mode",
+            default_value="simulation_gazebo_classic",
+            description="used to select the context and nodes to start",
+            choices=["simulation_gazebo_classic", "simulation", "live", "replay"],
+        ),
+        DeclareLaunchArgument(
+            "demo",
+            description="name used for the directory containing logs or record files",
+        ),
+        DeclareLaunchArgument(
+            "demo_timestamp",
+            description="timestamp string used as name for the created sub-directory",
+            default_value=get_demo_timestamp(),
+        ),
+        OpaqueFunction(function=launch_setup),
+    ]
+    return LaunchDescription(entities)
