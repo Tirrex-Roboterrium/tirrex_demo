@@ -51,7 +51,6 @@ def launch_setup(context, *args, **kwargs):
         else:
             bag_record_cmd.append("--use-sim-time")
 
-    print(bag_record_cmd)
     record_configuration = get_record_configuration(demo_config_directory)
 
     record_directory = get_record_directory(record_configuration, demo, demo_timestamp)
@@ -67,13 +66,14 @@ def launch_setup(context, *args, **kwargs):
         subprocess.call(["vcs", "diff", getcwd()], stdout=diff_file)
 
     bag_record_cmd.extend(["-o", record_directory + "/bag"])
+    print(bag_record_cmd)
     recorder = ExecuteProcess(cmd=bag_record_cmd)
 
-    return [
-        TimerAction(actions=[recorder], period=10.0),
-    ]
+    # return [
+    #     TimerAction(actions=[recorder], period=10.0),
+    # ]
 
-    # return [recorder]
+    return [recorder]
 
 
 def generate_launch_description():
@@ -106,7 +106,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             "demo_timestamp",
-            description="timestamp string used as name for the created sub-directory",
+            description="timestamp string used as name for the created subdirectory",
             default_value=get_demo_timestamp(),
         ),
         OpaqueFunction(function=launch_setup),
