@@ -62,7 +62,8 @@ def launch_setup(context, *args, **kwargs):
     joint_states_source_list = [base["name"]+"/joint_states"]
 
     devices = get_devices_configuration(configuration_directory)
-    for device_name in get_available_devices(devices, mode, "arm"):
+    for device_name in get_available_devices(devices, mode, "arm") + \
+                        get_available_devices(devices, mode, "implement"):
 
         meta_description_file_path = get_device_meta_description_file_path(
             configuration_directory, devices, device_name
