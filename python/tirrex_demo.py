@@ -95,7 +95,7 @@ def get_record_configuration(robot_configuration_directory):
 
 
 def get_demo_timestamp():
-    return datetime.datetime.now().strftime("%y-%m-%d-%H-%M")
+    return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
 
 
 def get_ros_home_directory(demo_name, demo_timestamp):

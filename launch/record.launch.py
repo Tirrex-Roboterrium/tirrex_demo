@@ -22,6 +22,7 @@ from launch.actions import (
 )
 
 from tirrex_demo import (
+    get_demo_timestamp,
     get_record_configuration,
     get_record_directory,
     get_bag_topics,
@@ -35,15 +36,37 @@ import subprocess
 
 def launch_setup(context, *args, **kwargs):
     demo = LaunchConfiguration("demo").perform(context)
-    demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
     demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
     robot_config_directory = LaunchConfiguration("robot_config_directory").perform(context)
-
-    mode = LaunchConfiguration("mode").perform(context)
+    demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
     robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
+    mode = LaunchConfiguration("mode").perform(context)
 
-    bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-    bag_record_cmd.extend(get_bag_topics(robot_namespace, robot_config_directory, mode))
+    record_configuration = get_record_configuration(demo_config_directory)
+    record_directory = get_record_directory(record_configuration, demo, demo_timestamp)
+
+    print(f"record_directory: {record_directory}")
+
+    bag_record_cmd = [
+        "ros2",
+        "bag",
+        "record",
+        "-s",
+        "mcap",
+        "--storage-preset-profile",
+        "zstd_fast",
+    ]
+
+    topics = ["/tf", "/tf_static"]
+    topics.extend(get_bag_topics(robot_namespace, robot_config_directory, mode))
+
+    extra_topics = record_configuration["extra_topics"]
+    if extra_topics:
+        topics.extend(extra_topics)
+
+    # allow using regular expression in topic names
+    topics_expr = "|".join(topics)
+    bag_record_cmd.extend(["-e", f"^({topics_expr})$"])
 
     if mode.startswith("simulation"):
         if getenv("ROS_DISTRO") == "galactic":
@@ -54,6 +77,8 @@ def launch_setup(context, *args, **kwargs):
     record_configuration = get_record_configuration(demo_config_directory)
 
     record_directory = get_record_directory(record_configuration, demo, demo_timestamp)
+    bag_record_cmd.extend(["-o", record_directory + "/bag"])
+    print(bag_record_cmd)
 
     if record_configuration["config"] is True:
         copytree(demo_config_directory, record_directory + "/config")
@@ -65,8 +90,7 @@ def launch_setup(context, *args, **kwargs):
         diff_file = open(record_directory + "/demo.diff", "w")
         subprocess.call(["vcs", "diff", getcwd()], stdout=diff_file)
 
-    bag_record_cmd.extend(["-o", record_directory + "/bag"])
-    print(bag_record_cmd)
+
     recorder = ExecuteProcess(cmd=bag_record_cmd)
 
     # return [
