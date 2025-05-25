@@ -18,7 +18,6 @@ from launch.actions import (
     DeclareLaunchArgument,
     OpaqueFunction,
     ExecuteProcess,
-    TimerAction,
 )
 
 from tirrex_demo import (
@@ -26,11 +25,10 @@ from tirrex_demo import (
     get_record_configuration,
     get_record_directory,
     get_bag_topics,
-    get_demo_timestamp,
 )
 
 from shutil import copytree
-from os import getcwd, getenv
+import os
 import subprocess
 
 
@@ -60,16 +58,16 @@ def launch_setup(context, *args, **kwargs):
     topics = ["/tf", "/tf_static"]
     topics.extend(get_bag_topics(robot_namespace, robot_config_directory, mode))
 
-    extra_topics = record_configuration["extra_topics"]
-    if extra_topics:
-        topics.extend(extra_topics)
+    additional_topics = record_configuration["additional_topics"]
+    if additional_topics:
+        topics.extend(additional_topics)
 
     # allow using regular expression in topic names
     topics_expr = "|".join(topics)
     bag_record_cmd.extend(["-e", f"^({topics_expr})$"])
 
     if mode.startswith("simulation"):
-        if getenv("ROS_DISTRO") == "galactic":
+        if os.getenv("ROS_DISTRO") == "galactic":
             bag_record_cmd.append("/clock")
         else:
             bag_record_cmd.append("--use-sim-time")
@@ -85,11 +83,10 @@ def launch_setup(context, *args, **kwargs):
 
     if record_configuration["vcs"] is True:
         repos_file = open(record_directory + "/demo.repos", "w")
-        subprocess.call(["vcs", "export", "--exact", getcwd()], stdout=repos_file)
+        subprocess.call(["vcs", "-n", "export", "--exact", "src"], stdout=repos_file)
 
         diff_file = open(record_directory + "/demo.diff", "w")
-        subprocess.call(["vcs", "diff", getcwd()], stdout=diff_file)
-
+        subprocess.call(["vcs", "-ns", "diff"], stdout=diff_file)
 
     recorder = ExecuteProcess(cmd=bag_record_cmd)
 
