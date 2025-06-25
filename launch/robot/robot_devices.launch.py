@@ -64,7 +64,7 @@ def launch_setup(context, *args, **kwargs):
             actions.append(
                 IncludeLaunchDescription(
                     PythonLaunchDescriptionSource(
-                        get_package_share_directory("romea_" + device_type + "_bringup")
+                        get_package_share_directory("romea_" + device_type + "_meta_bringup")
                         + "/launch/"
                         + device_type
                         + ".launch.py"

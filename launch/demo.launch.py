@@ -73,6 +73,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     if localisation == "true":
+
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -109,6 +110,7 @@ def launch_setup(context, *args, **kwargs):
         Node(
             package="rqt_runtime_monitor",
             executable="rqt_runtime_monitor",
+            parameters=[{"use_sim_time": "live" not in mode}],
             name="monitor",
             arguments=['--force-discover'],
         )

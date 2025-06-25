@@ -47,7 +47,7 @@ def launch_setup(context, *args, **kwargs):
 
     simulator = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            get_package_share_directory("romea_simulation_bringup")
+            get_package_share_directory("romea_simulation_meta_bringup")
             + "/launch/simulator.launch.py"
         ),
         launch_arguments={

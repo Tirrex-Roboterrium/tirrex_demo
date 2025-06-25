@@ -15,11 +15,11 @@
   <depend>launch_ros</depend>
   <depend>ament_index_python</depend>
 
-  <depend>romea_common_bringup</depend>
-  <depend>romea_mobile_base_bringup</depend>
-  <depend>romea_gps_bringup</depend>
-  <depend>romea_imu_bringup</depend>
-  <depend>romea_lidar_bringup</depend>
+  <depend>romea_common_meta_bringup</depend>
+  <depend>romea_mobile_base_meta_bringup</depend>
+  <depend>romea_gps_meta_bringup</depend>
+  <depend>romea_imu_meta_bringup</depend>
+  <depend>romea_lidar_meta_bringup</depend>
   <exec_depend>rqt_runtime_monitor</exec_depend>
 
   <export>

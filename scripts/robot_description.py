@@ -25,7 +25,7 @@ from tirrex_demo import (
     get_device_meta_description_file_path,
 )
 
-import romea_mobile_base_bringup
+import romea_mobile_base_meta_bringup
 
 if __name__ == "__main__":
 
@@ -44,13 +44,13 @@ if __name__ == "__main__":
     robot_namespace = parameters["robot_namespace"]
     configuration_directory = parameters["robot_configuration_directory"]
 
-    base_meta_description_file_path = get_base_meta_description_file_path(
-        configuration_directory
+    mobile_base_meta_description = romea_mobile_base_meta_bringup.load_meta_description(
+        get_base_meta_description_file_path(configuration_directory), robot_namespace
     )
 
     urdf = ET.fromstring(
-        romea_mobile_base_bringup.urdf_description(
-            robot_namespace, mode, base_meta_description_file_path
+        romea_mobile_base_meta_bringup.generate_urdf_description(
+            mode, mobile_base_meta_description
         )
     )
 
@@ -58,21 +58,22 @@ if __name__ == "__main__":
     for device_name in get_available_devices(devices, mode):
 
         device_type = devices[device_name]["type"]
-        device_meta_description_file_path = get_device_meta_description_file_path(
-            configuration_directory, devices, device_name
-        )
 
         if device_type != "joystick":
 
-            device_bringup = importlib.import_module(
-                "romea_" + device_type + "_bringup"
+            device_bringup = importlib.import_module("romea_" + device_type + "_meta_bringup")
+
+            device_meta_description_file_path = get_device_meta_description_file_path(
+                configuration_directory, devices, device_name
+            )
+
+            device_meta_description = device_bringup.load_meta_description(
+                device_meta_description_file_path, robot_namespace
             )
 
             urdf.extend(
                 ET.fromstring(
-                    device_bringup.urdf_description(
-                        robot_namespace, mode, device_meta_description_file_path
-                    )
+                    device_bringup.generate_urdf_description(mode, device_meta_description)
                 )
             )
 
