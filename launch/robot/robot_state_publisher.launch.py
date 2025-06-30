@@ -22,9 +22,6 @@ from launch.actions import (
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, SetParameter, PushRosNamespace
 
-
-from ament_index_python.packages import get_package_share_directory
-
 from tirrex_demo import (
     get_available_devices,
     get_base_meta_description,
@@ -110,17 +107,12 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_configuration_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_urdf_description"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("mode"),
+            DeclareLaunchArgument("robot_namespace"),
+            DeclareLaunchArgument("robot_configuration_directory"),
+            DeclareLaunchArgument("robot_urdf_description"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

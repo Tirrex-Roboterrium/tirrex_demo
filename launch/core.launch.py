@@ -57,7 +57,8 @@ def launch_setup(context, *args, **kwargs):
     actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") + "/launch/robot/robot.launch.py"
+                get_package_share_directory("tirrex_demo") 
+                + "/launch/robot/robot.launch.py"
             ),
             launch_arguments={
                 "mode": mode,

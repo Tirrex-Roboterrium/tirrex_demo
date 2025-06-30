@@ -12,17 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 from launch import LaunchDescription
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-    GroupAction
-)
-from launch_ros.actions import SetParameter, PushRosNamespace
+from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
 from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node, PushRosNamespace, SetParameter
+
+import tirrex_demo
 
 
 def get_mode(context):
@@ -37,26 +33,22 @@ def get_robot_config_directory(context):
     return LaunchConfiguration("robot_config_directory").perform(context)
 
 
-def get_localisation_configuration_file_path(context):
-    return get_robot_config_directory(context) + "/localisation.yaml"
+def get_localisation_configuration(context):
+    return tirrex_demo.get_localisation_configuration(get_robot_config_directory(context))
 
 
 def launch_setup(context, *args, **kwargs):
 
     mode = get_mode(context)
-    mode = get_mode(context)
-
     robot_namespace = get_robot_namespace(context)
-    localisation_configuration_file_path = get_localisation_configuration_file_path(context)
+    localisation_configuration = get_localisation_configuration(context)
 
-    localisation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            get_package_share_directory("romea_robot_to_world_localisation_core")
-            + "/launch/robot_to_world_localisation.launch.py"
-        ),
-        launch_arguments={
-            "filter_configuration_file_path": localisation_configuration_file_path,
-        }.items(),
+    localisation = Node(
+        package="romea_robot_to_world_localisation_core",
+        executable="robot_to_world_kalman_localisation_node",
+        name="kalman",
+        parameters=[localisation_configuration],
+        output="screen",
     )
 
     actions = [
@@ -65,7 +57,7 @@ def launch_setup(context, *args, **kwargs):
                 SetParameter(name="use_sim_time", value=(mode != "live")),
                 PushRosNamespace(robot_namespace),
                 PushRosNamespace("localisation"),
-                localisation
+                localisation,
             ]
         )
     ]
@@ -77,9 +69,9 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode", default_value="simulation_gazebo_classic"),
+            DeclareLaunchArgument("mode"),
             DeclareLaunchArgument("robot_namespace", default_value="robot"),
             DeclareLaunchArgument("robot_config_directory"),
-            OpaqueFunction(function=launch_setup)
+            OpaqueFunction(function=launch_setup),
         ]
     )

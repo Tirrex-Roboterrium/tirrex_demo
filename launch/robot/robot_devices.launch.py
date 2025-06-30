@@ -64,10 +64,8 @@ def launch_setup(context, *args, **kwargs):
             actions.append(
                 IncludeLaunchDescription(
                     PythonLaunchDescriptionSource(
-                        get_package_share_directory("romea_" + device_type + "_meta_bringup")
-                        + "/launch/"
-                        + device_type
-                        + ".launch.py"
+                        get_package_share_directory(f"romea_{device_type}_meta_bringup")
+                        + f"/launch/{device_type}.launch.py"
                     ),
                     launch_arguments={
                         "mode": mode,
@@ -82,14 +80,11 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("mode", default_value="live"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_configuration_directory"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("mode", default_value="live"),
+            DeclareLaunchArgument("robot_namespace"),
+            DeclareLaunchArgument("robot_configuration_directory"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

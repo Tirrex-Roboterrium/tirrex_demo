@@ -63,10 +63,6 @@ def launch_setup(context, *args, **kwargs):
         configuration_directory, mode
     )
 
-    # teleop_configuration_file_path = get_teleop_configuration_file_path(
-    #     configuration_directory
-    # )
-
     robot = []
 
     # print(get_robot_urdf_description(context))
@@ -106,20 +102,6 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-        # robot.append(
-        #     IncludeLaunchDescription(
-        #         PythonLaunchDescriptionSource(
-        #             get_package_share_directory("romea_joystick_meta_bringup")
-        #             + "/launch/joystick.launch.py"
-        #         ),
-        #         launch_arguments={
-        #             "mode": mode,
-        #             "robot_namespace": robot_namespace,
-        #             "meta_description_file_path": joystick_meta_description_file_path,
-        #         }.items(),
-        #     )
-        # )
-
         robot.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -133,22 +115,6 @@ def launch_setup(context, *args, **kwargs):
                 }.items(),
             )
         )
-
-    # robot.append(
-    #     IncludeLaunchDescription(
-    #         PythonLaunchDescriptionSource(
-    #             get_package_share_directory("romea_mobile_base_teleop_bringup")
-    #             + "/launch/teleop.launch.py"
-    #         ),
-    #         launch_arguments={
-    #             "mode": mode,
-    #             "robot_namespace": robot_namespace,
-    #             "base_meta_description_file_path": base_meta_description_file_path,
-    #             "joystick_meta_description_file_path": joystick_meta_description_file_path,
-    #             "teleop_configuration_file_path": teleop_configuration_file_path,
-    #         }.items(),
-    #     )
-    # )
 
     robot.append(
         IncludeLaunchDescription(

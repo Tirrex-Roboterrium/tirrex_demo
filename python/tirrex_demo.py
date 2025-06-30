@@ -38,10 +38,8 @@ def get_devices_configuration_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/devices.yaml"
 
 
-def get_devices_configuration(demo_configuration_directory):
-    with open(
-        get_devices_configuration_file_path(demo_configuration_directory)
-    ) as f:
+def get_devices_configuration(robot_configuration_directory):
+    with open(get_devices_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
@@ -49,19 +47,26 @@ def get_wgs84_anchor_file_path(demo_configuration_directory):
     return demo_configuration_directory + "/wgs84_anchor.yaml"
 
 
-def get_wgs84_anchor(robot_configuration_directory):
-    with open(
-        get_wgs84_anchor_file_path(robot_configuration_directory)
-    ) as f:
+def get_wgs84_anchor(demo_configuration_directory):
+    with open(get_wgs84_anchor_file_path(demo_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_localisation_configuration_file_path(demo_configuration_directory):
-    return demo_configuration_directory + "/localisation.yaml"
+def get_localisation_configuration_file_path(robot_configuration_directory):
+    return robot_configuration_directory + "/localisation.yaml"
 
 
-def get_localisation_configuration(demo_configuration_directory):
-    with open(get_localisation_configuration_file_path(demo_configuration_directory)) as f:
+def get_localisation_configuration(robot_configuration_directory):
+    with open(get_localisation_configuration_file_path(robot_configuration_directory)) as f:
+        return yaml.safe_load(f)
+
+
+def get_path_following_configuration_file_path(robot_configuration_directory):
+    return robot_configuration_directory + "/path_following.yaml"
+
+
+def get_path_following_configuration(demo_configuration_directory):
+    with open(get_path_following_configuration_file_path(demo_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
@@ -79,18 +84,16 @@ def get_simulation_configuration_file_path(demo_configuration_directory):
 
 
 def get_simulation_configuration(robot_configuration_directory):
-    with open(
-        get_simulation_configuration_file_path(robot_configuration_directory)
-    ) as f:
+    with open(get_simulation_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
-def get_record_configuration_file_path(robot_configuration_directory):
-    return robot_configuration_directory + "/records.yaml"
+def get_record_configuration_file_path(demo_configuration_directory):
+    return demo_configuration_directory + "/records.yaml"
 
 
-def get_record_configuration(robot_configuration_directory):
-    with open(get_record_configuration_file_path(robot_configuration_directory)) as f:
+def get_record_configuration(demo_configuration_directory):
+    with open(get_record_configuration_file_path(demo_configuration_directory)) as f:
         return yaml.safe_load(f)
 
 
@@ -181,29 +184,20 @@ def get_replay_configuration(replay_directory):
 def get_device_meta_description_file_path(
     robot_configuration_directory, devices, device_name
 ):
-
     device_type = devices[device_name]["type"]
-
-    return (
-        robot_configuration_directory
-        + "/devices/"
-        + device_name
-        + "."
-        + device_type
-        + ".yaml"
-    )
+    return f"{robot_configuration_directory}/devices/{device_name}.{device_type}.yaml"
 
 
-def get_devices_meta_description_file_paths(robot_config_directory, mode, type="all"):
+# def get_devices_meta_description_file_paths(robot_config_directory, mode, type="all"):
 
-    devices_meta_description_file_paths = []
-    devices = get_devices_configuration(robot_config_directory)
-    for device_name in get_available_devices(devices, mode, type):
-        devices_meta_description_file_paths.append(
-            get_device_meta_description_file_path(robot_config_directory, devices, device_name)
-        )
+#     devices_meta_description_file_paths = []
+#     devices = get_devices_configuration(robot_config_directory)
+#     for device_name in get_available_devices(devices, mode, type):
+#         devices_meta_description_file_paths.append(
+#             get_device_meta_description_file_path(robot_config_directory, devices, device_name)
+#         )
 
-    return devices_meta_description_file_paths
+#     return devices_meta_description_file_paths
 
 
 def get_device_meta_description(robot_configuration_directory, devices, device_name):

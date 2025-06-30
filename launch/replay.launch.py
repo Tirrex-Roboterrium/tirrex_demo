@@ -71,12 +71,10 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("replay_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("use_recorded_config", default_value="false"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("replay_directory"),
+            DeclareLaunchArgument("use_recorded_config", default_value="false"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

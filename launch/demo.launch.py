@@ -62,7 +62,8 @@ def launch_setup(context, *args, **kwargs):
     actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") + "/launch/robot/robot.launch.py"
+                get_package_share_directory("tirrex_demo") 
+                + "/launch/robot/robot.launch.py"
             ),
             launch_arguments={
                 "mode": mode,
@@ -94,7 +95,8 @@ def launch_setup(context, *args, **kwargs):
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo") + "/launch/record.launch.py"
+                    get_package_share_directory("tirrex_demo") 
+                    + "/launch/record.launch.py"
                 ),
                 launch_arguments={
                     "demo": demo,
@@ -121,22 +123,15 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("demo"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_timestamp"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
-    declared_arguments.append(DeclareLaunchArgument("localisation", default_value="true"))
-
-    declared_arguments.append(DeclareLaunchArgument("record", default_value="false"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("demo"),
+            DeclareLaunchArgument("demo_timestamp"),
+            DeclareLaunchArgument("demo_config_directory"),
+            DeclareLaunchArgument("mode"),
+            DeclareLaunchArgument("robot_namespace"),
+            DeclareLaunchArgument("localisation", default_value="false"),
+            DeclareLaunchArgument("record", default_value="false"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

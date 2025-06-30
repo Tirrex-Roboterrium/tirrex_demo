@@ -62,12 +62,10 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("simulator_type", default_value="gazebo"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("demo_config_directory"),
+            DeclareLaunchArgument("simulator_type", default_value="gazebo"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

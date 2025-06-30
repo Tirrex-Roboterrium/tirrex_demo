@@ -18,6 +18,7 @@ from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
+import tirrex_demo
 
 def get_robot_namespace(context):
     return LaunchConfiguration('robot_namespace').perform(context)
@@ -42,7 +43,8 @@ def launch_setup(context, *args, **kwargs):
 
     path_recorder = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            get_package_share_directory('romea_path_following') + '/launch/path_recorder.launch.py'
+            get_package_share_directory('romea_path_following') 
+            + '/launch/path_recorder.launch.py'
         ),
         launch_arguments={
             'robot_namespace': robot_namespace,
@@ -55,9 +57,11 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    declared_arguments = [
-        DeclareLaunchArgument('demo_config_directory'),
-        DeclareLaunchArgument('robot_namespace', default_value='robot'),
-        DeclareLaunchArgument('trajectory_filename'),
-    ]
-    return LaunchDescription(declared_arguments + [OpaqueFunction(function=launch_setup)])
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument('demo_config_directory'),
+            DeclareLaunchArgument('robot_namespace', default_value='robot'),
+            DeclareLaunchArgument('trajectory_filename'),
+            OpaqueFunction(function=launch_setup)
+        ]
+    )

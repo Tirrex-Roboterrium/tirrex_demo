@@ -90,18 +90,13 @@ def launch_setup(context, *args, **kwargs):
 
 def generate_launch_description():
 
-    declared_arguments = []
-
-    declared_arguments.append(DeclareLaunchArgument("demo"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_timestamp"))
-
-    declared_arguments.append(DeclareLaunchArgument("demo_config_directory"))
-
-    declared_arguments.append(DeclareLaunchArgument("mode"))
-
-    declared_arguments.append(DeclareLaunchArgument("robot_namespace"))
-
     return LaunchDescription(
-        declared_arguments + [OpaqueFunction(function=launch_setup)]
+        [
+            DeclareLaunchArgument("demo"),
+            DeclareLaunchArgument("demo_timestamp"),
+            DeclareLaunchArgument("demo_config_directory"),
+            DeclareLaunchArgument("mode"),
+            DeclareLaunchArgument("robot_namespace"),
+            OpaqueFunction(function=launch_setup)
+        ]
     )

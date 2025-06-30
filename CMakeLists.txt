@@ -15,6 +15,8 @@ install(
 
 ament_python_install_module(python/tirrex_demo.py)
 
+ament_python_install_package(tirrex_core)
+
 install(PROGRAMS
   scripts/robot_description.py
   DESTINATION lib/${PROJECT_NAME}
