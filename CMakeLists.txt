@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(tirrex_demo)
+project(tirrex_core)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -12,8 +12,6 @@ install(
   DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
 )
-
-ament_python_install_module(python/tirrex_demo.py)
 
 ament_python_install_package(tirrex_core)
 

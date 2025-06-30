@@ -13,55 +13,29 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    DeclareLaunchArgument,
-    OpaqueFunction,
-    GroupAction
-)
-from launch.substitutions import LaunchConfiguration
+from launch.actions import OpaqueFunction, GroupAction
 from launch_ros.actions import Node, SetParameter, PushRosNamespace
 
-from tirrex_demo import (
-    get_available_devices,
-    get_base_meta_description,
-    get_devices_configuration,
-    get_device_meta_description_file_path,
-)
+from tirrex_core import config
+from tirrex_core import launch
 
 import yaml
 
 
-def get_mode(context):
-    return LaunchConfiguration("mode").perform(context)
-
-
-def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
-
-
-def get_robot_configuration_directory(context):
-    return LaunchConfiguration("robot_configuration_directory").perform(context)
-
-
-def get_robot_urdf_description(context):
-    return LaunchConfiguration("robot_urdf_description").perform(context)
-
-
 def launch_setup(context, *args, **kwargs):
 
-    mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
-    configuration_directory = get_robot_configuration_directory(context)
-    robot_urdf_description = get_robot_urdf_description(context)
+    mode = launch.get_mode(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    configuration_directory = launch.get_robot_configuration_directory(context)
+    robot_urdf_description = launch.get_robot_urdf_description(context)
 
-    base = get_base_meta_description(configuration_directory)
+    base = config.get_base_meta_description(configuration_directory)
     joint_states_source_list = [base["name"]+"/joint_states"]
 
-    devices = get_devices_configuration(configuration_directory)
-    for device_name in get_available_devices(devices, mode, "arm"):
+    devices = config.get_devices_configuration(configuration_directory)
+    for device_name in config.get_available_devices(devices, mode, "arm"):
 
-        meta_description_file_path = get_device_meta_description_file_path(
+        meta_description_file_path = config.get_device_meta_description_file_path(
             configuration_directory, devices, device_name
         )
 
@@ -109,10 +83,10 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("robot_namespace"),
-            DeclareLaunchArgument("robot_configuration_directory"),
-            DeclareLaunchArgument("robot_urdf_description"),
+            launch.declare_mode(),
+            launch.declare_robot_namespace(),
+            launch.declare_robot_configuration_directory(),
+            launch.declare_robot_urdf_description(),
             OpaqueFunction(function=launch_setup)
         ]
     )

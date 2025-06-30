@@ -13,34 +13,24 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-    GroupAction,
-)
-
+from launch.actions import IncludeLaunchDescription, OpaqueFunction, GroupAction
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
+
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
 
-    demo = LaunchConfiguration("demo").perform(context)
-    demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
-    demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
+    demo = launch.get_demo(context)
+    demo_timestamp = launch.get_demo_start_timestamp(context)
+    demo_config_directory = launch.get_demo_configuration_directory(context)
     robot_config_directory = demo_config_directory + '/robot'
 
-    mode = LaunchConfiguration("mode").perform(context)
-    record = LaunchConfiguration("record").perform(context)
-    robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    localisation = LaunchConfiguration("localisation").perform(context)
-
-    if mode == "simulation":
-        mode += "_gazebo_classic"
+    mode = launch.get_mode(context)
+    record = launch.get_record(context)
+    robot_namespace = launch.get_robot_namespace(context)
 
     actions = []
 
@@ -49,7 +39,7 @@ def launch_setup(context, *args, **kwargs):
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo")
+                    get_package_share_directory("tirrex_core")
                     + "/launch/simulator.launch.py"
                 ),
                 launch_arguments={
@@ -62,7 +52,7 @@ def launch_setup(context, *args, **kwargs):
     actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") 
+                get_package_share_directory("tirrex_core")
                 + "/launch/robot/robot.launch.py"
             ),
             launch_arguments={
@@ -73,29 +63,12 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    if localisation == "true":
-
-        actions.append(
-            IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo")
-                    + "/launch/robot/robot_localisation.launch.py"
-                ),
-                launch_arguments={
-                    "mode": mode,
-                    "robot_namespace": robot_namespace,
-                    "demo_config_directory": demo_config_directory,
-                    "robot_config_directory": robot_config_directory,
-                }.items(),
-            )
-        )
-
     if record == "true":
 
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo") 
+                    get_package_share_directory("tirrex_core")
                     + "/launch/record.launch.py"
                 ),
                 launch_arguments={
@@ -125,13 +98,12 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("demo"),
-            DeclareLaunchArgument("demo_timestamp"),
-            DeclareLaunchArgument("demo_config_directory"),
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("robot_namespace"),
-            DeclareLaunchArgument("localisation", default_value="false"),
-            DeclareLaunchArgument("record", default_value="false"),
+            launch.declare_demo(),
+            launch.declare_demo_start_timestamp(),
+            launch.declare_demo_configuration_directory(),
+            launch.declare_mode(),
+            launch.declare_robot_namespace(),
+            launch.declare_record(),
             OpaqueFunction(function=launch_setup)
         ]
     )

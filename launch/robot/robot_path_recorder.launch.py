@@ -13,55 +13,46 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, OpaqueFunction
-from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
+from launch.actions import OpaqueFunction, GroupAction
+from launch_ros.actions import Node, PushRosNamespace
 
-import tirrex_demo
-
-def get_robot_namespace(context):
-    return LaunchConfiguration('robot_namespace').perform(context)
-
-
-def get_demo_config_directory(context):
-    return LaunchConfiguration('demo_config_directory').perform(context)
-
-
-def get_wgs84_anchor_configuration_file_path(context):
-    return get_demo_config_directory(context) + '/wgs84_anchor.yaml'
-
-
-def get_trajectory_file_path(context):
-    return LaunchConfiguration('trajectory_filename').perform(context)
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
-    robot_namespace = get_robot_namespace(context)
-    trajectory_file_path = get_trajectory_file_path(context)
-    wgs84_anchor_file_path = get_wgs84_anchor_configuration_file_path(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    wgs84_anchor = launch.get_wgs84_anchor(context)
+    latitude = wgs84_anchor["latitude"]
+    longitude = wgs84_anchor["longitude"]
+    altitude = wgs84_anchor["altitude"]
 
-    path_recorder = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            get_package_share_directory('romea_path_following') 
-            + '/launch/path_recorder.launch.py'
-        ),
-        launch_arguments={
-            'robot_namespace': robot_namespace,
-            'trajectory_file_path': trajectory_file_path,
-            'wgs84_anchor_file_path': wgs84_anchor_file_path,
-        }.items(),
+    actions = []
+
+    actions.append(PushRosNamespace(robot_namespace))
+
+    actions.append(
+        Node(
+            package="romea_path_tools",
+            executable="record",
+            name="path_recorder",
+            output="screen",
+            parameters=[
+                {"anchor": [latitude, longitude, altitude]},
+                {"output": launch.get_path(context)},
+            ],
+            remappings=[("odom", "localisation/filtered_odom")],
+        )
     )
 
-    return [path_recorder]
-
+    return [GroupAction(actions)]
+    
 
 def generate_launch_description():
     return LaunchDescription(
         [
-            DeclareLaunchArgument('demo_config_directory'),
-            DeclareLaunchArgument('robot_namespace', default_value='robot'),
-            DeclareLaunchArgument('trajectory_filename'),
+            launch.declare_robot_namespace(),
+            launch.declare_demo_configuration_directory(),
+            launch.declare_path("output_path.traj"),
             OpaqueFunction(function=launch_setup)
         ]
     )

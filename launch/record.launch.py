@@ -13,28 +13,11 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-
 from launch.actions import TimerAction
+from launch.actions import OpaqueFunction, ExecuteProcess
 
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-    GroupAction,
-    ExecuteProcess,
-)
-
-from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from ament_index_python.packages import get_package_share_directory
-
-from tirrex_demo import (
-    get_record_configuration,
-    get_record_directory,
-    get_bag_topics,
-)
+from tirrex_core import config
+from tirrex_core import launch
 
 from shutil import copytree
 from os import getcwd, getenv
@@ -43,27 +26,24 @@ import subprocess
 
 def launch_setup(context, *args, **kwargs):
 
-    demo = LaunchConfiguration("demo").perform(context)
-    demo_timestamp = LaunchConfiguration("demo_timestamp").perform(context)
-    demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
-
-    mode = LaunchConfiguration("mode").perform(context)
-    robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
+    mode = launch.get_mode(context)
+    demo = launch.get_demo(context)
+    demo_timestamp = launch.get_demo_start_timestamp(context)
+    demo_config_directory = launch.get_demo_configuration_directory(context)
 
     bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-    bag_record_cmd.extend(get_bag_topics(
-        robot_namespace, demo_config_directory+"/robot", mode))
+    bag_record_cmd.extend(launch.get_bag_topics(context))
 
-    if mode == "simulation":
+    if "simulation" in mode:
         if getenv("ROS_DISTRO") == "galactic":
             bag_record_cmd.append("/clock")
         else:
             bag_record_cmd.append("--use-sim-time")
 
     print(bag_record_cmd)
-    record_configuration = get_record_configuration(demo_config_directory)
+    record_configuration = launch.get_record_configuration(context)
 
-    record_directory = get_record_directory(
+    record_directory = config.get_record_directory(
         record_configuration, demo, demo_timestamp
     )
 
@@ -92,11 +72,12 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("demo"),
-            DeclareLaunchArgument("demo_timestamp"),
-            DeclareLaunchArgument("demo_config_directory"),
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("robot_namespace"),
+            launch.declare_demo(),
+            launch.declare_demo_start_timestamp(),
+            launch.declare_demo_configuration_directory(),
+            launch.declare_robot_namespace(),
+            launch.declare_robot_configuration_directory(),
+            launch.declare_mode(),
             OpaqueFunction(function=launch_setup)
         ]
     )

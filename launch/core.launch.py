@@ -16,26 +16,23 @@ from launch import LaunchDescription
 
 from launch.actions import (
     IncludeLaunchDescription,
-    DeclareLaunchArgument,
     OpaqueFunction,
     GroupAction,
 )
 
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
+
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
 
-    mode = LaunchConfiguration("mode").perform(context)
-    robot_namespace = LaunchConfiguration("robot_namespace").perform(context)
-    demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
-    robot_config_directory = LaunchConfiguration("robot_config_directory").perform(context)
-
-    if mode == "simulation":
-        mode += "_gazebo_classic"
+    mode = launch.get_mode(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    demo_config_directory = launch.get_demo_configuration_directory(context)
+    robot_config_directory = launch.get_robot_configuration_directory(context)
 
     actions = []
 
@@ -44,7 +41,7 @@ def launch_setup(context, *args, **kwargs):
         actions.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
-                    get_package_share_directory("tirrex_demo")
+                    get_package_share_directory("tirrex_core")
                     + "/launch/simulator.launch.py"
                 ),
                 launch_arguments={
@@ -57,7 +54,7 @@ def launch_setup(context, *args, **kwargs):
     actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                get_package_share_directory("tirrex_demo") 
+                get_package_share_directory("tirrex_core")
                 + "/launch/robot/robot.launch.py"
             ),
             launch_arguments={
@@ -81,29 +78,12 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
-    entities = [
-        DeclareLaunchArgument(
-            'demo_config_directory',
-            description='directory containing the YAML file to configure the simulation',
-        ),
-        DeclareLaunchArgument(
-            'robot_config_directory',
-            default_value=PathJoinSubstitution(
-                [LaunchConfiguration('demo_config_directory'), 'robot']
-            ),
-            description='directory containing the YAML file to configure the spawned robot',
-        ),
-        DeclareLaunchArgument(
-            'robot_namespace',
-            description='ROS namespace used for the robot',
-            default_value="robot",
-        ),
-        DeclareLaunchArgument(
-            'mode',
-            default_value='simulation_gazebo_classic',
-            description='used to select the context and nodes to start',
-            choices=['simulation_gazebo_classic', 'simulation', 'live', 'replay'],
-        ),
-        OpaqueFunction(function=launch_setup),
-    ]
-    return LaunchDescription(entities)
+    return LaunchDescription(
+        [
+            launch.declare_mode(),
+            launch.declare_robot_namespace(),
+            launch.declare_demo_configuration_directory(),
+            launch.declare_robot_configuration_directory(),
+            OpaqueFunction(function=launch_setup),
+        ]
+    )

@@ -65,9 +65,13 @@ def get_path_following_configuration_file_path(robot_configuration_directory):
     return robot_configuration_directory + "/path_following.yaml"
 
 
-def get_path_following_configuration(demo_configuration_directory):
-    with open(get_path_following_configuration_file_path(demo_configuration_directory)) as f:
+def get_path_following_configuration(robot_configuration_directory):
+    with open(get_path_following_configuration_file_path(robot_configuration_directory)) as f:
         return yaml.safe_load(f)
+
+
+def get_trajectory_file_path(demo_configuration_directory, trajectory_name):
+    return os.path.join(demo_configuration_directory, "paths", trajectory_name)
 
 
 def get_teleop_configuration_file_path(robot_configuration_directory):

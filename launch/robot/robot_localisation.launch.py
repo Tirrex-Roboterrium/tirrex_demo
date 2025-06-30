@@ -14,34 +14,17 @@
 
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
-from launch.substitutions import LaunchConfiguration
+from launch.actions import OpaqueFunction, GroupAction
 from launch_ros.actions import Node, PushRosNamespace, SetParameter
 
-import tirrex_demo
-
-
-def get_mode(context):
-    return LaunchConfiguration("mode").perform(context)
-
-
-def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
-
-
-def get_robot_config_directory(context):
-    return LaunchConfiguration("robot_config_directory").perform(context)
-
-
-def get_localisation_configuration(context):
-    return tirrex_demo.get_localisation_configuration(get_robot_config_directory(context))
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
 
-    mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
-    localisation_configuration = get_localisation_configuration(context)
+    mode = launch.get_mode(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    localisation_configuration = launch.get_localisation_configuration(context)
 
     localisation = Node(
         package="romea_robot_to_world_localisation_core",
@@ -69,9 +52,9 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("robot_namespace", default_value="robot"),
-            DeclareLaunchArgument("robot_config_directory"),
+            launch.declare_mode(),
+            launch.declare_robot_namespace("robot"),
+            launch.declare_robot_configuration_directory(),
             OpaqueFunction(function=launch_setup),
         ]
     )

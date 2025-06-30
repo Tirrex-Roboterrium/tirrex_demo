@@ -26,7 +26,7 @@ from launch.substitutions import LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
-from tirrex_demo import (
+from tirrex_core import (
     get_wgs84_anchor_file_path,
     get_simulation_configuration_file_path,
 )

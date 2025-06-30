@@ -12,70 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import yaml
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction, GroupAction
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.actions import OpaqueFunction, GroupAction
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node, PushRosNamespace, SetParameter
-
 
 import romea_joystick_utils
 import romea_joystick_meta_bringup
 import romea_mobile_base_meta_bringup
-import tirrex_demo
-
-from tirrex_demo import (
-    get_base_meta_description_file_path,
-    get_joystick_meta_description_file_path,
-)
-
-
-def get_mode(context):
-    return LaunchConfiguration("mode").perform(context)
-
-
-def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
-
-
-def get_demo_config_directory(context):
-    return LaunchConfiguration("demo_config_directory").perform(context)
-
-
-def get_robot_config_directory(context):
-    return LaunchConfiguration("robot_config_directory").perform(context)
-
-
-def get_wgs84_anchor(context):
-    return tirrex_demo.get_wgs84_anchor(get_demo_config_directory(context))
-
-
-def get_path_following_configuration(context):
-    return tirrex_demo.get_path_following_configuration(get_robot_config_directory(context))
-
-
-def get_mobile_base_meta_description(context):
-    return romea_mobile_base_meta_bringup.load_meta_description(
-        get_base_meta_description_file_path(get_robot_config_directory(context)),
-        get_robot_namespace(context),
-    )
-
-
-def get_joystick_meta_description(context):
-    return romea_joystick_meta_bringup.load_meta_description(
-        get_joystick_meta_description_file_path(
-            get_robot_config_directory(context), get_mode(context)
-        ),
-        get_robot_namespace(context),
-    )
-
-
-def get_trajectory_file_path(context):
-    trajectory_filename = LaunchConfiguration("trajectory_filename").perform(context)
-    return os.path.join(get_demo_config_directory(context), "paths", trajectory_filename)
+from tirrex_core import launch
 
 
 def get_joystick_configuration(joystick_meta_description):
@@ -102,10 +49,10 @@ def get_mobile_base_configuration(mobile_base_meta_description):
 
 
 def launch_setup(context, *args, **kwargs):
-    mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
-    joystick_meta_description = get_joystick_meta_description(context)
-    mobile_base_meta_description = get_mobile_base_meta_description(context)
+    mode = launch.get_mode(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    joystick_meta_description = launch.get_joystick_meta_description(context)
+    mobile_base_meta_description = launch.get_mobile_base_meta_description(context)
 
     actions = []
 
@@ -121,8 +68,8 @@ def launch_setup(context, *args, **kwargs):
             output="screen",
             parameters=[
                 {
-                    "wgs84_anchor": get_wgs84_anchor(context),
-                    "path": get_trajectory_file_path(context),
+                    "wgs84_anchor": launch.get_wgs84_anchor(context),
+                    "path": launch.get_path(context),
                     "prediction_time_horizon": 1.0,
                     "path_frame_id": "map",
                     "autoconfigure": True,
@@ -149,7 +96,7 @@ def launch_setup(context, *args, **kwargs):
                     "autoconfigure": True,
                     "autostart": True,
                 },
-                get_path_following_configuration(context),  # may redefine previous parameters
+                launch.get_path_following_configuration(context),  # may redefine previous parameters
             ],
             remappings=[
                 ("cmd_mux/subscribe", mobile_base_name + "/cmd_mux/subscribe"),
@@ -166,16 +113,11 @@ def launch_setup(context, *args, **kwargs):
 def generate_launch_description():
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode"),
-            DeclareLaunchArgument("demo_config_directory"),
-            DeclareLaunchArgument("robot_namespace", default_value="robot"),
-            DeclareLaunchArgument(
-                "robot_config_directory",
-                default_value=PathJoinSubstitution(
-                    [LaunchConfiguration("demo_config_directory"), "robot"]
-                ),
-            ),
-            DeclareLaunchArgument("trajectory_filename"),
+            launch.declare_mode(),
+            launch.declare_robot_namespace("robot"),
+            launch.declare_demo_configuration_directory(),
+            launch.declare_robot_configuration_directory(),
+            launch.declare_path(),
             OpaqueFunction(function=launch_setup),
         ]
     )

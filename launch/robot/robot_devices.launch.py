@@ -13,51 +13,29 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-)
-from launch.substitutions import LaunchConfiguration
+from launch.actions import IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-
-from tirrex_demo import (
-    get_available_devices,
-    get_devices_configuration,
-    get_device_meta_description_file_path,
-)
-
 from ament_index_python.packages import get_package_share_directory
 
-
-def get_mode(context):
-    return LaunchConfiguration("mode").perform(context)
-
-
-def get_robot_namespace(context):
-    return LaunchConfiguration("robot_namespace").perform(context)
-
-
-def get_robot_configuration_directory(context):
-    return LaunchConfiguration("robot_configuration_directory").perform(context)
+from tirrex_core import config
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
 
-    mode = get_mode(context)
-    robot_namespace = get_robot_namespace(context)
-    configuration_directory = get_robot_configuration_directory(context)
-    devices = get_devices_configuration(configuration_directory)
+    mode = launch.get_mode(context)
+    robot_namespace = launch.get_robot_namespace(context)
+    configuration_directory = launch.get_robot_configuration_directory(context)
+    devices = config.get_devices_configuration(configuration_directory)
 
     actions = []
 
-    for device_name in get_available_devices(devices, mode):
+    for device_name in config.get_available_devices(devices, mode):
         device_type = devices[device_name]["type"]
 
         if device_type != "joystick":
 
-            meta_description_file_path = get_device_meta_description_file_path(
+            meta_description_file_path = config.get_device_meta_description_file_path(
                 configuration_directory, devices, device_name
             )
 
@@ -82,9 +60,9 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("mode", default_value="live"),
-            DeclareLaunchArgument("robot_namespace"),
-            DeclareLaunchArgument("robot_configuration_directory"),
+            launch.declare_mode("live"),
+            launch.declare_robot_namespace(),
+            launch.declare_robot_configuration_directory(),
             OpaqueFunction(function=launch_setup)
         ]
     )
