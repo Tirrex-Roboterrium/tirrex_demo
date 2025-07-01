@@ -36,7 +36,7 @@ def launch_setup(context, *args, **kwargs):
 
     actions = []
 
-    if mode == "simulation_gazebo_classic":
+    if mode.startswith("simulation"):
 
         actions.append(
             IncludeLaunchDescription(

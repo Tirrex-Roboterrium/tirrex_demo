@@ -79,5 +79,5 @@ def generate_launch_description():
             launch.declare_robot_configuration_directory(),
             launch.declare_mode(),
             OpaqueFunction(function=launch_setup)
-        ]
+        ]   
     )

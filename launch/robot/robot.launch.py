@@ -36,7 +36,7 @@ def launch_setup(context, *args, **kwargs):
     # print(get_robot_urdf_description(context))
     # print("robot_namespace", robot_namespace)
 
-    if mode == "simulation_gazebo_classic":
+    if mode.startswith("simulation"):
         robot.append(
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -44,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
                     + "/launch/entity.launch.py"
                 ),
                 launch_arguments={
-                    "simulator_type": "gazebo",
+                    "simulator_type": launch.get_simulator_type(context),
                     "robot_namespace": robot_namespace,
                     "robot_urdf_description": robot_urdf_description,
                     "meta_description_file_path": base_meta_description_file_path,
