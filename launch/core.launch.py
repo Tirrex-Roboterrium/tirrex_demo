@@ -45,8 +45,8 @@ def launch_setup(context, *args, **kwargs):
                     + "/launch/simulator.launch.py"
                 ),
                 launch_arguments={
-                    "simulator_type": "gazebo",
-                    "demo_config_directory": demo_config_directory,
+                    "mode": mode,
+                    "demo_configuration_directory": demo_config_directory,
                 }.items(),
             )
         )
@@ -60,7 +60,7 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "robot_configuration_directory": robot_config_directory, 
+                "robot_configuration_directory": robot_config_directory,
             }.items(),
         )
     )

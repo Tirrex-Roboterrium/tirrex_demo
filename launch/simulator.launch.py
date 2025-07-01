@@ -13,37 +13,14 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-
-from launch.actions import (
-    IncludeLaunchDescription,
-    DeclareLaunchArgument,
-    OpaqueFunction,
-    GroupAction,
-    ExecuteProcess,
-)
-
-from launch.substitutions import LaunchConfiguration
+from launch.actions import IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
 
-from tirrex_core import (
-    get_wgs84_anchor_file_path,
-    get_simulation_configuration_file_path,
-)
+from tirrex_core import launch
 
 
 def launch_setup(context, *args, **kwargs):
-
-    simulator_type = LaunchConfiguration("simulator_type").perform(context)
-    demo_config_directory = LaunchConfiguration("demo_config_directory").perform(context)
-
-    wgs84_anchor_file_path = get_wgs84_anchor_file_path(
-        demo_config_directory
-    )
-
-    simulation_configuration_file_path = get_simulation_configuration_file_path(
-        demo_config_directory
-    )
 
     simulator = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -51,9 +28,11 @@ def launch_setup(context, *args, **kwargs):
             + "/launch/simulator.launch.py"
         ),
         launch_arguments={
-            "simulator_type": simulator_type,
-            "wgs84_anchor_file_path": wgs84_anchor_file_path,
-            "simulation_configuration_file_path": simulation_configuration_file_path,
+            "simulator_type": launch.get_simulator_type(context),
+            "wgs84_anchor_file_path": launch.get_wgs84_anchor_file_path(context),
+            "simulation_configuration_file_path": launch.get_simulation_configuration_file_path(
+                context
+            ),
         }.items(),
     )
 
@@ -64,8 +43,8 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            DeclareLaunchArgument("demo_config_directory"),
-            DeclareLaunchArgument("simulator_type", default_value="gazebo"),
-            OpaqueFunction(function=launch_setup)
+            launch.declare_mode(),
+            launch.declare_demo_configuration_directory(),
+            OpaqueFunction(function=launch_setup),
         ]
     )

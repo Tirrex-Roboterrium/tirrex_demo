@@ -196,6 +196,22 @@ def get_path(context):
     return path
 
 
+def get_simulation_configuration_file_path(context):
+    return config.get_simulation_configuration_file_path(
+        get_demo_configuration_directory(context))
+
+
+def get_simulation_configuration(context):
+    return config.get_simulation_configuration(
+        get_demo_configuration_directory(context))
+
+
+def get_simulator_type(context):
+    mode = get_mode(context)
+    assert mode.startswith("simulation_"), "Cannot deduce simulator type from mode."
+    return mode.replace("simulation_", "")
+
+
 def get_wgs84_anchor_file_path(context):
     return config.get_wgs84_anchor_file_path(get_demo_configuration_directory(context))
 

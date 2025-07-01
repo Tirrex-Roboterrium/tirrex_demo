@@ -18,7 +18,7 @@ import sys
 import importlib
 import xml.etree.ElementTree as ET
 
-from tirrex_core import (
+from tirrex_core.config import (
     get_base_meta_description_file_path,
     get_available_devices,
     get_devices_configuration,
