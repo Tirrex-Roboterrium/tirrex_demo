@@ -21,6 +21,7 @@
   <depend>romea_imu_bringup</depend>
   <depend>romea_lidar_bringup</depend>
   <exec_depend>rqt_runtime_monitor</exec_depend>
+  <exec_depend>rviz</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
