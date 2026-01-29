@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
-import yaml
-import os
+from datetime import datetime
+from os import makedirs
+from os.path import dirname, join
 
-from romea_common_meta_bringup import device_prefix
 from ament_index_python.packages import get_package_share_directory
-from os.path import join
+
+from romea_common_meta_bringup.utils import device_prefix
+
+import yaml
 
 
 def get_demo_config_directory(demo_name):
@@ -71,7 +73,7 @@ def get_path_following_configuration(robot_configuration_directory):
 
 
 def get_trajectory_file_path(demo_configuration_directory, trajectory_name):
-    return os.path.join(demo_configuration_directory, "paths", trajectory_name)
+    return join(demo_configuration_directory, "paths", trajectory_name)
 
 
 def get_teleop_configuration_file_path(robot_configuration_directory):
@@ -102,7 +104,7 @@ def get_record_configuration(demo_configuration_directory):
 
 
 def get_demo_timestamp():
-    return datetime.datetime.now().strftime("%y-%m-%d-%H-%M")
+    return datetime.now().strftime("%y-%m-%d-%H-%M")
 
 
 def get_ros_home_directory(demo_name, demo_timestamp):
@@ -171,7 +173,7 @@ def save_replay_configuration(demo_name, demo_timestamp, launch_file, launch_arg
     )
 
     filename = records_directory + "/replay.yaml"
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    makedirs(dirname(filename), exist_ok=True)
     with open(filename, "w") as f:
         yaml.dump(replay_configuration, f, default_flow_style=False)
 
@@ -214,8 +216,8 @@ def get_device_meta_description(robot_configuration_directory, devices, device_n
         return yaml.safe_load(f)
 
 
-def is_available_device(devices, mode, device_name, type):
-    if type == "all" or devices[device_name]["type"] == type:
+def is_available_device(devices, mode, device_name, device_type):
+    if device_type == "all" or devices[device_name]["type"] == device_type:
 
         return (
             devices[device_name]["available_mode"] in mode
@@ -225,11 +227,11 @@ def is_available_device(devices, mode, device_name, type):
         return False
 
 
-def get_available_devices(devices, mode, type="all"):
+def get_available_devices(devices, mode, device_type="all"):
 
     available_devices = []
     for device_name in devices.keys():
-        if is_available_device(devices, mode, device_name, type):
+        if is_available_device(devices, mode, device_name, device_type):
             available_devices.append(device_name)
 
     return available_devices

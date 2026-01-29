@@ -14,18 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import importlib
+import sys
 import xml.etree.ElementTree as ET
 
+import romea_mobile_base_meta_bringup.meta_description as mobile_base
+
 from tirrex_core.config import (
-    get_base_meta_description_file_path,
     get_available_devices,
-    get_devices_configuration,
+    get_base_meta_description_file_path,
     get_device_meta_description_file_path,
+    get_devices_configuration,
 )
 
-import romea_mobile_base_meta_bringup
 
 if __name__ == "__main__":
 
@@ -44,14 +45,12 @@ if __name__ == "__main__":
     robot_namespace = parameters["robot_namespace"]
     configuration_directory = parameters["robot_configuration_directory"]
 
-    mobile_base_meta_description = romea_mobile_base_meta_bringup.load_meta_description(
+    mobile_base_meta_description = mobile_base.load_meta_description(
         get_base_meta_description_file_path(configuration_directory), robot_namespace
     )
 
     urdf = ET.fromstring(
-        romea_mobile_base_meta_bringup.generate_urdf_description(
-            mode, mobile_base_meta_description
-        )
+        mobile_base.generate_urdf_description(mode, mobile_base_meta_description)
     )
 
     devices = get_devices_configuration(configuration_directory)
@@ -61,19 +60,21 @@ if __name__ == "__main__":
 
         if device_type != "joystick":
 
-            device_bringup = importlib.import_module("romea_" + device_type + "_meta_bringup")
+            device = importlib.import_module(
+                "romea_" + device_type + "_meta_bringup.meta_description"
+            )
 
             device_meta_description_file_path = get_device_meta_description_file_path(
                 configuration_directory, devices, device_name
             )
 
-            device_meta_description = device_bringup.load_meta_description(
+            device_meta_description = device.load_meta_description(
                 device_meta_description_file_path, robot_namespace
             )
 
             urdf.extend(
                 ET.fromstring(
-                    device_bringup.generate_urdf_description(mode, device_meta_description)
+                    device.generate_urdf_description(mode, device_meta_description)
                 )
             )
 

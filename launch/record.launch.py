@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from os import getcwd, getenv
+from shutil import copytree
+import subprocess
+
 from launch import LaunchDescription
-from launch.actions import TimerAction
-from launch.actions import OpaqueFunction, ExecuteProcess
+from launch.actions import ExecuteProcess, OpaqueFunction, TimerAction
 
 from tirrex_core import config
 from tirrex_core import launch
-
-from shutil import copytree
-from os import getcwd, getenv
-import subprocess
 
 
 def launch_setup(context, *args, **kwargs):
@@ -79,5 +78,5 @@ def generate_launch_description():
             launch.declare_robot_configuration_directory(),
             launch.declare_mode(),
             OpaqueFunction(function=launch_setup)
-        ]   
+        ]
     )

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, GroupAction
-from launch_ros.actions import Node, SetParameter, PushRosNamespace
+from launch.actions import GroupAction, OpaqueFunction
+from launch_ros.actions import Node, PushRosNamespace, SetParameter
 
 from tirrex_core import config
 from tirrex_core import launch

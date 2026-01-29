@@ -12,17 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import yaml
+
+from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, GroupAction
-from ament_index_python.packages import get_package_share_directory
+from launch.actions import GroupAction, OpaqueFunction
 from launch_ros.actions import Node, PushRosNamespace, SetParameter
 
-import romea_joystick_utils
 import romea_joystick_meta_bringup
+import romea_joystick_utils
 import romea_mobile_base_meta_bringup
+
 from tirrex_core import launch
+
+import yaml
 
 
 def get_joystick_configuration(joystick_meta_description):
@@ -96,7 +99,8 @@ def launch_setup(context, *args, **kwargs):
                     "autoconfigure": True,
                     "autostart": True,
                 },
-                launch.get_path_following_configuration(context),  # may redefine previous parameters
+                # may redefine previous parameters
+                launch.get_path_following_configuration(context),
             ],
             remappings=[
                 ("cmd_mux/subscribe", mobile_base_name + "/cmd_mux/subscribe"),

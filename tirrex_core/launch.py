@@ -13,11 +13,19 @@
 # limitations under the License.
 
 import os
+
+from ament_index_python import get_packages_with_prefixes
+
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 
-import romea_mobile_base_meta_bringup
-import romea_joystick_meta_bringup
+from romea_joystick_meta_bringup.meta_description import (
+    load_meta_description as load_joystick_meta_description,
+)
+from romea_mobile_base_meta_bringup.meta_description import (
+    load_meta_description as load_mobile_base_meta_description,
+)
+
 from tirrex_core import config
 
 
@@ -34,11 +42,11 @@ def declare_robot_namespace(default_value=None):
             "name": "robot_namespace",
             "description": "ROS namespace used for the robot without the '/' prefix",
         },
-        default_value
+        default_value,
     )
 
 
-def declare_mode(default_value=None):    
+def declare_mode(default_value=None):
     return declare_argument(
         {
             "name": "mode",
@@ -48,10 +56,11 @@ def declare_mode(default_value=None):
                 "simulation",
                 "simulation_gazebo",
                 "simulation_gazebo_classic",
+                "simulation_isaac",
                 "replay",
             ],
         },
-        default_value
+        default_value,
     )
 
 
@@ -61,7 +70,7 @@ def declare_demo(default_value=None):
             "name": "demo",
             "description": "name of the demonstration",
         },
-        default_value
+        default_value,
     )
 
 
@@ -69,9 +78,11 @@ def declare_demo_configuration_directory(default_value=None):
     return declare_argument(
         {
             "name": "demo_configuration_directory",
-            "description": "directory containing the YAML files used to describe the demonstration",
+            "description": (
+                "directory containing the YAML files used to describe the demonstration"
+            )
         },
-        default_value
+        default_value,
     )
 
 
@@ -81,7 +92,7 @@ def declare_demo_start_timestamp(default_value=None):
             "name": "demo_start_timestamp",
             "description": "string representation of the demo start timestamp",
         },
-        default_value
+        default_value,
     )
 
 
@@ -101,18 +112,14 @@ def declare_robot_urdf_description(default_value=None):
             "name": "robot_urdf_description",
             "description": "robot URDF description",
         },
-        default_value
+        default_value,
     )
 
 
 def declare_record(default_value="false"):
     return declare_argument(
-        {
-            "name": "record",
-            "description": "enable or not recording",
-            "choices": ["true", "false"]
-        },
-        default_value
+        {"name": "record", "description": "enable or not recording", "choices": ["true", "false"]},
+        default_value,
     )
 
 
@@ -122,7 +129,7 @@ def declare_robot(default_value=None):
             "name": "robot",
             "description": "name of the selected robot",
         },
-        default_value
+        default_value,
     )
 
 
@@ -141,14 +148,20 @@ def declare_path(default_value=None):
             "name": "path",
             "description": "path name for the robot's navigation or for recording purposes",
         },
-        default_value
+        default_value,
     )
 
 
 def get_mode(context):
     mode = LaunchConfiguration("mode").perform(context)
     if mode == "simulation":
-        mode += "_gazebo_classic"
+        pkgs = get_packages_with_prefixes()
+        if "gazebo_ros" in pkgs:
+            mode += "_gazebo_classic"
+        elif "ros_gz" in pkgs:
+            mode += "_gazebo"
+        else:
+            raise ValueError("No Gazebo package found. Please install 'gazebo_ros' or 'ros_gz'.")
     return mode
 
 
@@ -197,13 +210,11 @@ def get_path(context):
 
 
 def get_simulation_configuration_file_path(context):
-    return config.get_simulation_configuration_file_path(
-        get_demo_configuration_directory(context))
+    return config.get_simulation_configuration_file_path(get_demo_configuration_directory(context))
 
 
 def get_simulation_configuration(context):
-    return config.get_simulation_configuration(
-        get_demo_configuration_directory(context))
+    return config.get_simulation_configuration(get_demo_configuration_directory(context))
 
 
 def get_simulator_type(context):
@@ -221,13 +232,11 @@ def get_wgs84_anchor(context):
 
 
 def get_mobile_base_meta_description_file_path(context):
-    return config.get_base_meta_description_file_path(
-        get_robot_configuration_directory(context)
-    )
+    return config.get_base_meta_description_file_path(get_robot_configuration_directory(context))
 
 
 def get_mobile_base_meta_description(context):
-    return romea_mobile_base_meta_bringup.load_meta_description(
+    return load_mobile_base_meta_description(
         get_mobile_base_meta_description_file_path(context),
         get_robot_namespace(context),
     )
@@ -235,40 +244,31 @@ def get_mobile_base_meta_description(context):
 
 def get_joystick_meta_description_file_path(context):
     return config.get_joystick_meta_description_file_path(
-            get_robot_configuration_directory(context),
-            get_mode(context)
+        get_robot_configuration_directory(context), get_mode(context)
     )
 
 
 def get_joystick_meta_description(context):
     print(get_joystick_meta_description_file_path(context))
-    return romea_joystick_meta_bringup.load_meta_description(
+    return load_joystick_meta_description(
         get_joystick_meta_description_file_path(context),
         get_robot_namespace(context),
     )
 
 
 def get_localisation_configuration(context):
-    return config.get_localisation_configuration(
-        get_robot_configuration_directory(context)
-    )
+    return config.get_localisation_configuration(get_robot_configuration_directory(context))
 
 
 def get_path_following_configuration(context):
-    return config.get_path_following_configuration(
-        get_robot_configuration_directory(context)
-    )
+    return config.get_path_following_configuration(get_robot_configuration_directory(context))
 
 
 def get_record_configuration(context):
-    return config.get_record_configuration(
-        get_robot_configuration_directory(context)
-    )
+    return config.get_record_configuration(get_robot_configuration_directory(context))
 
 
 def get_bag_topic(context):
     return config.get_bag_topics(
-        get_robot_namespace(context),
-        get_robot_configuration_directory(context),
-        get_mode(context)
+        get_robot_namespace(context), get_robot_configuration_directory(context), get_mode(context)
     )

@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, OpaqueFunction, GroupAction
-from launch_ros.actions import Node
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from ament_index_python.packages import get_package_share_directory
+
+from launch import LaunchDescription
+from launch.actions import GroupAction, IncludeLaunchDescription, OpaqueFunction
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch_ros.actions import Node
 
 from tirrex_core import launch
 
@@ -81,15 +82,15 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    actions.append(
-        Node(
-            package="rqt_runtime_monitor",
-            executable="rqt_runtime_monitor",
-            parameters=[{"use_sim_time": "live" not in mode}],
-            name="monitor",
-            arguments=['--force-discover'],
-        )
-    )
+    # actions.append(
+    #     Node(
+    #         package="rqt_runtime_monitor",
+    #         executable="rqt_runtime_monitor",
+    #         parameters=[{"use_sim_time": "live" not in mode}],
+    #         name="monitor",
+    #         arguments=['--force-discover'],
+    #     )
+    # )
 
     return [GroupAction(actions)]
 
