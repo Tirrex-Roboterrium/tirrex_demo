@@ -60,14 +60,14 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    # actions.append(
-    #     Node(
-    #         package="rqt_runtime_monitor",
-    #         executable="rqt_runtime_monitor",
-    #         name="monitor",
-    #         arguments=['--force-discover'],
-    #     )
-    # )
+    actions.append(
+        Node(
+            package="rqt_runtime_monitor",
+            executable="rqt_runtime_monitor",
+            name="monitor",
+            arguments=['--force-discover'],
+        )
+    )
 
     return [GroupAction(actions)]
 
@@ -82,3 +82,4 @@ def generate_launch_description():
             OpaqueFunction(function=launch_setup),
         ]
     )
+     

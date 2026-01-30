@@ -82,15 +82,15 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    # actions.append(
-    #     Node(
-    #         package="rqt_runtime_monitor",
-    #         executable="rqt_runtime_monitor",
-    #         parameters=[{"use_sim_time": "live" not in mode}],
-    #         name="monitor",
-    #         arguments=['--force-discover'],
-    #     )
-    # )
+    actions.append(
+        Node(
+            package="rqt_runtime_monitor",
+            executable="rqt_runtime_monitor",
+            parameters=[{"use_sim_time": "live" not in mode}],
+            name="monitor",
+            arguments=['--force-discover'],
+        )
+    )
 
     return [GroupAction(actions)]
 
