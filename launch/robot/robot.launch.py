@@ -49,15 +49,16 @@ def launch_setup(context, *args, **kwargs):
             meta_description_file_path = config.get_device_meta_description_file_path(
                 configuration_directory, devices, device_name
             )
-            print(device_type, meta_description_file_path)
             robot_meta_description["devices"].append( 
                 {
                     "type" :  device_type ,
                     "meta_description" :  meta_description_file_path
                 }
             )
-                
-    with open('/tmp/robot.yml', 'w') as outfile:
+
+
+    robot_meta_description_file_path  = f"/tmp/{robot_namespace}.yaml"          
+    with open(robot_meta_description_file_path, 'w') as outfile:
         yaml.dump(robot_meta_description, outfile, default_flow_style=False)
   
     robot=[]
@@ -72,7 +73,7 @@ def launch_setup(context, *args, **kwargs):
                     "entity_type": "robot",
                     "simulator_type": launch.get_simulator_type(context),
                     "robot_namespace": robot_namespace,
-                    "meta_description_file_path": '/tmp/robot.yml',
+                    "meta_description_file_path": robot_meta_description_file_path,
                 }.items(),
             )
         )
@@ -86,48 +87,10 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "mode": mode,
                 "robot_namespace": robot_namespace,
-                "meta_description_file_path": '/tmp/robot.yml',
+                "meta_description_file_path": robot_meta_description_file_path,
             }.items(),
         )
     )
-
-            # DeclareLaunchArgument("entity_type"),
-            # DeclareLaunchArgument("simulator_type"),
-            # DeclareLaunchArgument("robot_namespace"),
-            # DeclareLaunchArgument("meta_description_file_path"),
-            # DeclareLaunchArgument("robot_urdf_description", default_value=urdf_description),
-
-    # if "replay" not in mode:
-
-    #     robot.append(
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(
-    #                 get_package_share_directory("romea_mobile_base_meta_bringup")
-    #                 + "/launch/mobile_base.launch.py"
-    #             ),
-    #             launch_arguments={
-    #                 "mode": mode,
-    #                 "robot_namespace": robot_namespace,
-    #                 "mobile_base_meta_description_file_path": base_meta_description_file_path,
-    #                 "joystick_meta_description_file_path": joystick_meta_description_file_path,
-    #                 "urdf_description": robot_urdf_description,
-    #             }.items(),
-    #         )
-    #     )
-
-    #     robot.append(
-    #         IncludeLaunchDescription(
-    #             PythonLaunchDescriptionSource(
-    #                 get_package_share_directory("tirrex_core")
-    #                 + "/launch/robot/robot_devices.launch.py"
-    #             ),
-    #             launch_arguments={
-    #                 "mode": mode,
-    #                 "robot_namespace": robot_namespace,
-    #                 "robot_configuration_directory": configuration_directory,
-    #             }.items(),
-    #         )
-    #     )
 
     # robot.append(
     #     IncludeLaunchDescription(
