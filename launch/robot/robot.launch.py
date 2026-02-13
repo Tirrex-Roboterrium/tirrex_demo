@@ -33,7 +33,8 @@ def launch_setup(context, *args, **kwargs):
     configuration_directory = launch.get_robot_configuration_directory(context)
     base_meta_description_file_path = launch.get_mobile_base_meta_description_file_path(context)
     joystick_meta_description_file_path = launch.get_joystick_meta_description_file_path(context)
-    
+    wgs84_anchor_file_path =  launch.get_wgs84_anchor_file_path(context)
+
     robot_meta_description = {
         "base": {"meta_description": base_meta_description_file_path},
         "joystick": {"meta_description": joystick_meta_description_file_path},
@@ -88,6 +89,7 @@ def launch_setup(context, *args, **kwargs):
                 "mode": mode,
                 "robot_namespace": robot_namespace,
                 "meta_description_file_path": robot_meta_description_file_path,
+                "wgs84_anchor_file_path": wgs84_anchor_file_path,
             }.items(),
         )
     )
