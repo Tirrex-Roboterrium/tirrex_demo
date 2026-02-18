@@ -29,14 +29,16 @@ import yaml
 
 
 def get_joystick_configuration(joystick_meta_description):
-    return romea_joystick_meta_bringup.get_complete_configuration(joystick_meta_description)
+    return romea_joystick_meta_bringup.meta_description.get_complete_configuration(
+        joystick_meta_description
+    )
 
 
 def get_joystick_mapping(joystick_meta_description):
     joystick_configuration = get_joystick_configuration(joystick_meta_description)
     joystick_remapping_file_path = (
         get_package_share_directory("romea_path_following")
-        + f'/config/joystick/{joystick_configuration["type"]}.yaml'
+        + f"/config/joystick/{joystick_configuration['type']}.yaml"
     )
 
     with open(joystick_remapping_file_path) as f:
@@ -48,7 +50,9 @@ def get_joystick_mapping(joystick_meta_description):
 
 
 def get_mobile_base_configuration(mobile_base_meta_description):
-    return romea_mobile_base_meta_bringup.get_configuration(mobile_base_meta_description)
+    return romea_mobile_base_meta_bringup.meta_description.get_configuration(
+        mobile_base_meta_description
+    )
 
 
 def launch_setup(context, *args, **kwargs):
