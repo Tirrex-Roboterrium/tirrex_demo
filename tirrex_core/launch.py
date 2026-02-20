@@ -249,7 +249,6 @@ def get_joystick_meta_description_file_path(context):
 
 
 def get_joystick_meta_description(context):
-    print(get_joystick_meta_description_file_path(context))
     return load_joystick_meta_description(
         get_joystick_meta_description_file_path(context),
         get_robot_namespace(context),

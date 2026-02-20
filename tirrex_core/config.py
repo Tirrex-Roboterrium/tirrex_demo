@@ -124,15 +124,11 @@ def get_record_directory(records_configuration, demo_name, demo_timestamp):
 
 
 def get_record_log_directory(records_configuration, demo_name, demo_timestamp):
-    return join(
-        get_record_directory(records_configuration, demo_name, demo_timestamp), "log"
-    )
+    return join(get_record_directory(records_configuration, demo_name, demo_timestamp), "log")
 
 
 def get_record_debug_directory(records_configuration, demo_name, demo_timestamp):
-    return join(
-        get_record_directory(records_configuration, demo_name, demo_timestamp), "debug"
-    )
+    return join(get_record_directory(records_configuration, demo_name, demo_timestamp), "debug")
 
 
 def get_log_directory(demo_name, demo_timestamp, record):
@@ -140,9 +136,7 @@ def get_log_directory(demo_name, demo_timestamp, record):
         demo_configuration_directory = get_demo_config_directory(demo_name)
         record_configuration = get_record_configuration(demo_configuration_directory)
         if record_configuration["log"]:
-            return get_record_log_directory(
-                record_configuration, demo_name, demo_timestamp
-            )
+            return get_record_log_directory(record_configuration, demo_name, demo_timestamp)
 
     return get_ros_home_log_directory(demo_name, demo_timestamp)
 
@@ -152,9 +146,7 @@ def get_debug_directory(demo_name, demo_timestamp, record):
         demo_configuration_directory = get_demo_config_directory(demo_name)
         record_configuration = get_record_configuration(demo_configuration_directory)
         if record_configuration["debug"]:
-            return get_record_debug_directory(
-                record_configuration, demo_name, demo_timestamp
-            )
+            return get_record_debug_directory(record_configuration, demo_name, demo_timestamp)
 
     return get_ros_home_debug_directory(demo_name, demo_timestamp)
 
@@ -168,9 +160,7 @@ def save_replay_configuration(demo_name, demo_timestamp, launch_file, launch_arg
 
     demo_configuration_directory = get_demo_config_directory(demo_name)
     record_configuration = get_record_configuration(demo_configuration_directory)
-    records_directory = get_record_directory(
-        record_configuration, demo_name, demo_timestamp
-    )
+    records_directory = get_record_directory(record_configuration, demo_name, demo_timestamp)
 
     filename = records_directory + "/replay.yaml"
     makedirs(dirname(filename), exist_ok=True)
@@ -187,9 +177,7 @@ def get_replay_configuration(replay_directory):
         return yaml.safe_load(f)
 
 
-def get_device_meta_description_file_path(
-    robot_configuration_directory, devices, device_name
-):
+def get_device_meta_description_file_path(robot_configuration_directory, devices, device_name):
     device_type = devices[device_name]["type"]
     return f"{robot_configuration_directory}/devices/{device_name}.{device_type}.yaml"
 
@@ -255,21 +243,15 @@ def get_bag_topics(robot_namespace, robot_configuration_directory, mode):
     base = get_base_meta_description(robot_configuration_directory)
     devices = get_devices_configuration(robot_configuration_directory)
 
-    topics_prefix = device_prefix(
-        robot_namespace, base.get("namespace"), base.get("name")
-    )
+    topics_prefix = device_prefix(robot_namespace, base.get("namespace"), base.get("name"))
 
     topics = get_topics(topics_prefix, base)
 
     for device_name in get_available_devices(devices, mode):
 
-        device = get_device_meta_description(
-            robot_configuration_directory, devices, device_name
-        )
+        device = get_device_meta_description(robot_configuration_directory, devices, device_name)
 
-        topics_prefix = device_prefix(
-            robot_namespace, device.get("namespace"), device.get("name")
-        )
+        topics_prefix = device_prefix(robot_namespace, device.get("namespace"), device.get("name"))
 
         topics.extend(get_topics(topics_prefix, device))
 
@@ -284,9 +266,7 @@ def get_available_joystick(robot_configuration_directory, devices, mode):
         raise LookupError("A joystick must be added in devices configuration")
 
     if len(available_joysticks) >= 2:
-        raise LookupError(
-            "Only one joystick must be available in devices configuration"
-        )
+        raise LookupError("Only one joystick must be available in devices configuration")
 
     return available_joysticks[0]
 
@@ -298,6 +278,45 @@ def get_joystick_meta_description_file_path(robot_configuration_directory, mode)
         robot_configuration_directory, devices, joystick_name
     )
 
+
+def generate_robot_meta_description(robot_configuration_directory, mode):
+
+    base_meta_description_file_path = get_base_meta_description_file_path(
+        robot_configuration_directory
+    )
+    joystick_meta_description_file_path = get_joystick_meta_description_file_path(
+        robot_configuration_directory, mode
+    )
+
+    robot_meta_description = {
+        "base": {"meta_description": base_meta_description_file_path},
+        "joystick": {"meta_description": joystick_meta_description_file_path},
+        "devices": [],
+    }
+
+    devices = get_devices_configuration(robot_configuration_directory)
+    for device_name in get_available_devices(devices, mode):
+        device_type = devices[device_name]["type"]
+
+        if device_type != "joystick":
+
+            meta_description_file_path = get_device_meta_description_file_path(
+                robot_configuration_directory, devices, device_name
+            )
+            robot_meta_description["devices"].append(
+                {"type": device_type, "meta_description": meta_description_file_path}
+            )
+
+    return robot_meta_description
+
+def generate_robot_meta_description_file(robot_namespace, robot_configuration_directory, mode):
+
+    robot_meta_description = generate_robot_meta_description(robot_configuration_directory,mode)
+    robot_meta_description_file_path  = f"/tmp/{robot_namespace}.yaml"          
+    with open(robot_meta_description_file_path, 'w') as outfile:
+        yaml.dump(robot_meta_description, outfile, default_flow_style=False)
+
+    return robot_meta_description_file_path   
 
 # def robot_full_name(type, model=""):
 #     if model != "":

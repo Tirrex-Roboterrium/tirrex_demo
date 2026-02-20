@@ -19,8 +19,6 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, OpaqueFunction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration
-from launch_ros.substitutions import ExecutableInPackage
 
 from tirrex_core import config, launch
 
@@ -29,39 +27,13 @@ def launch_setup(context, *args, **kwargs):
     
     mode = launch.get_mode(context)
     robot_namespace = launch.get_robot_namespace(context)
-    # robot_urdf_description = launch.get_robot_urdf_description(context)
     configuration_directory = launch.get_robot_configuration_directory(context)
-    base_meta_description_file_path = launch.get_mobile_base_meta_description_file_path(context)
-    joystick_meta_description_file_path = launch.get_joystick_meta_description_file_path(context)
     wgs84_anchor_file_path =  launch.get_wgs84_anchor_file_path(context)
 
-    robot_meta_description = {
-        "base": {"meta_description": base_meta_description_file_path},
-        "joystick": {"meta_description": joystick_meta_description_file_path},
-        "devices": []
-    }
+    robot_meta_description_file_path = config.generate_robot_meta_description_file(
+        robot_namespace, configuration_directory, mode
+    )
 
-    devices = config.get_devices_configuration(configuration_directory)
-    for device_name in config.get_available_devices(devices, mode):
-        device_type = devices[device_name]["type"]
-
-        if device_type != "joystick":
-
-            meta_description_file_path = config.get_device_meta_description_file_path(
-                configuration_directory, devices, device_name
-            )
-            robot_meta_description["devices"].append( 
-                {
-                    "type" :  device_type ,
-                    "meta_description" :  meta_description_file_path
-                }
-            )
-
-
-    robot_meta_description_file_path  = f"/tmp/{robot_namespace}.yaml"          
-    with open(robot_meta_description_file_path, 'w') as outfile:
-        yaml.dump(robot_meta_description, outfile, default_flow_style=False)
-  
     robot=[]
     if mode.startswith("simulation"):
         robot.append(
@@ -94,20 +66,19 @@ def launch_setup(context, *args, **kwargs):
         )
     )
 
-    # robot.append(
-    #     IncludeLaunchDescription(
-    #         PythonLaunchDescriptionSource(
-    #             get_package_share_directory("tirrex_core")
-    #             + "/launch/robot/robot_state_publisher.launch.py"
-    #         ),
-    #         launch_arguments={
-    #             "mode": mode,
-    #             "robot_namespace": robot_namespace,
-    #             "robot_configuration_directory": configuration_directory,
-    #             "robot_urdf_description": robot_urdf_description,
-    #         }.items(),
-    #     )
-    # )
+    robot.append(
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                get_package_share_directory("romea_robot_meta_bringup")
+                + "/launch/robot_state_publisher.launch.py"
+            ),
+            launch_arguments={
+                "mode": mode,
+                "robot_namespace": robot_namespace,
+                "meta_description_file_path": robot_meta_description_file_path,
+            }.items(),
+        )
+    )
 
     return robot
 
