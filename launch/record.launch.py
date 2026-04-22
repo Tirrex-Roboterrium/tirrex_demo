@@ -53,6 +53,8 @@ def launch_setup(context, *args, **kwargs):
         "mcap",
         "--storage-preset-profile",
         "zstd_fast",
+        "-b",
+        "2000000000"  # split: 2.0 GB
     ]
 
     topics = ["/tf", "/tf_static"]
