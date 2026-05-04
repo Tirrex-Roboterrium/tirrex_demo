@@ -26,11 +26,17 @@ def launch_setup(context, *args, **kwargs):
     robot_namespace = launch.get_robot_namespace(context)
     localisation_configuration = launch.get_localisation_configuration(context)
 
+    base_footprint_configuration = {}
+    if robot_namespace and robot_namespace != "/":
+        base_footprint_configuration["base_footprint_frame_id"] = (
+            robot_namespace + "_base_footprint"
+        )
+
     localisation = Node(
         package="romea_robot_to_world_localisation_core",
         executable="robot_to_world_kalman_localisation_node",
         name="kalman",
-        parameters=[localisation_configuration],
+        parameters=[localisation_configuration, base_footprint_configuration],
         output="screen",
     )
 
