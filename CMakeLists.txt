@@ -13,6 +13,11 @@ install(
   DESTINATION share/${PROJECT_NAME}
 )
 
+install(
+  DIRECTORY doc
+  DESTINATION share/${PROJECT_NAME}
+)
+
 ament_python_install_package(tirrex_core)
 
 install(PROGRAMS
