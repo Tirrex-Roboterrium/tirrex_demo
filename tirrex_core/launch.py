@@ -36,7 +36,7 @@ def declare_argument(description, default_value):
         return DeclareLaunchArgument(**description, default_value=default_value)
 
 
-def declare_robot_namespace(default_value=None):
+def declare_robot_namespace(default_value="robot"):
     return declare_argument(
         {
             "name": "robot_namespace",
@@ -46,7 +46,7 @@ def declare_robot_namespace(default_value=None):
     )
 
 
-def declare_mode(default_value=None):
+def declare_mode(default_value="simulation_gazebo"):
     return declare_argument(
         {
             "name": "mode",
@@ -86,7 +86,7 @@ def declare_demo_configuration_directory(default_value=None):
     )
 
 
-def declare_demo_start_timestamp(default_value=None):
+def declare_demo_start_timestamp(default_value=config.get_demo_timestamp()):
     return declare_argument(
         {
             "name": "demo_start_timestamp",

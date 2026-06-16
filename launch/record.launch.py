@@ -30,8 +30,23 @@ def launch_setup(context, *args, **kwargs):
     demo_timestamp = launch.get_demo_start_timestamp(context)
     demo_config_directory = launch.get_demo_configuration_directory(context)
 
-    bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
+    bag_record_cmd = [
+        "ros2", "bag", "record",
+        "-s", "mcap",
+        "--storage-preset-profile", "zstd_fast",
+        "-b", "2000000000",  # split: 2.0 GB
+    ]
     bag_record_cmd.extend(launch.get_bag_topic(context))
+
+    record_configuration = launch.get_record_configuration(context)
+    topics = ["/tf", "/tf_static"]
+    additional_topics = record_configuration["additional_topics"]
+    if additional_topics:
+        topics.extend(additional_topics)
+
+    # allow using regular expression in topic names
+    topics_expr = "|".join(topics)
+    bag_record_cmd.extend(["-e", f"^({topics_expr})$"])
 
     if "simulation" in mode:
         if getenv("ROS_DISTRO") == "galactic":
@@ -39,32 +54,29 @@ def launch_setup(context, *args, **kwargs):
         else:
             bag_record_cmd.append("--use-sim-time")
 
-    print(bag_record_cmd)
-    record_configuration = launch.get_record_configuration(context)
-
     record_directory = config.get_record_directory(
         record_configuration, demo, demo_timestamp
     )
+    bag_record_cmd.extend(["-o", record_directory + "/bag"])
+    print(bag_record_cmd)
 
     if record_configuration["config"] is True:
         copytree(demo_config_directory, record_directory + "/config")
 
     if record_configuration["vcs"] is True:
         repos_file = open(record_directory + "/demo.repos", "w")
-        subprocess.call(["vcs", "export", "--exact", getcwd()], stdout=repos_file)
+        subprocess.call(["vcs", "-n", "export", "--exact", "src"], stdout=repos_file)
 
         diff_file = open(record_directory + "/demo.diff", "w")
-        subprocess.call(["vcs", "diff", getcwd()], stdout=diff_file)
+        subprocess.call(["vcs", "-ns", "diff"], stdout=diff_file)
 
-    bag_record_cmd.extend(["-o", record_directory + "/bag"])
     recorder = ExecuteProcess(cmd=bag_record_cmd)
 
-    return [
-        TimerAction(
-            actions=[recorder], period=10.0),
-    ]
+    # return [
+    #     TimerAction(actions=[recorder], period=10.0),
+    # ]
 
-    # return [recorder]
+    return [recorder]
 
 
 def generate_launch_description():
