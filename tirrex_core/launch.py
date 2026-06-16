@@ -264,7 +264,7 @@ def get_path_following_configuration(context):
 
 
 def get_record_configuration(context):
-    return config.get_record_configuration(get_robot_configuration_directory(context))
+    return config.get_record_configuration(get_demo_configuration_directory(context))
 
 
 def get_bag_topic(context):

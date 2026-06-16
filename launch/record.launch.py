@@ -31,7 +31,7 @@ def launch_setup(context, *args, **kwargs):
     demo_config_directory = launch.get_demo_configuration_directory(context)
 
     bag_record_cmd = ["ros2", "bag", "record", "/tf", "/tf_static"]
-    bag_record_cmd.extend(launch.get_bag_topics(context))
+    bag_record_cmd.extend(launch.get_bag_topic(context))
 
     if "simulation" in mode:
         if getenv("ROS_DISTRO") == "galactic":
