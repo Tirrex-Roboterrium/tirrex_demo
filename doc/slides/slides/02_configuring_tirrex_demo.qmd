@@ -1,0 +1,169 @@
+# Configuring and Running a TIRREX Demo
+
+## A demo is just configuration {.tirrex-overview-slide}
+
+::: {.tirrex-story-intro}
+TIRREX Roboterrium is built on top of the ROMEA ecosystem to simplify the use of both ROMEA and ROS 2. Rather than implementing its own launch logic, a demo only describes the robot, devices, capabilities, and execution mode through YAML configuration files. TIRREX orchestrates this configuration and relies on ROMEA to launch the required ROS 2 components. This approach enables the same demo to run seamlessly in simulation, on a real robot, or within record-and-replay workflows, without modification.
+:::
+
+![](img/02_configuring_tirrex_demo/demo_is_configuration.svg){.demo-is-configuration-diagram}
+
+::: {.highlight-box .tirrex-provides-points}
+::: {.tirrex-provides-grid}
+::: {.tirrex-provides-item}
+**TIRREX provides**
+
+Experiment-level orchestration<br>
+Unified configuration entry point<br>
+Same workflow for simulation and field tests
+:::
+
+::: {.tirrex-provides-item}
+**ROMEA provides**
+
+Component launch logic<br>
+Reusable robotics algorithms<br>
+Drivers, controllers and simulation bridges
+:::
+
+::: {.tirrex-provides-item}
+**ROS 2 provides**
+
+Communication middleware<br>
+Lifecycle and launch tools<br>
+Ecosystem for modular robotic systems
+:::
+:::
+:::
+
+## A configuration example {.tirrex-story-slide}
+
+::: {.tirrex-story-intro}
+All information specific to a demo is grouped in one readable,
+version-controlled directory. It is the single source of truth shared by
+simulation, field execution and replay.
+:::
+
+::: {.columns .configuration-directory-layout}
+::: {.column width="65%"}
+### What the directory contains
+
+::: {.configuration-directory-points}
+- `robot/` — robot system and algorithm configuration
+- `simulation.yaml` — simulator, world and initial poses
+- `wgs84_anchor.yaml` — geographic reference shared by the demo
+- `records.yaml` — recording options
+- `paths/` — trajectories used by navigation
+:::
+
+### Inside the `robot/` directory
+
+::: {.configuration-directory-conventions}
+- `base.yaml` describes the mobile base
+- `devices.yaml` lists the available devices
+- `devices/<name>.<type>.yaml` describes each embedded devices
+- `localisation.yaml`, `path_matching.yaml` and `path_following.yaml` configure localisation and navigation
+- `teleop.yaml` configures manual robot control
+:::
+:::
+
+::: {.column .configuration-directory-tree width="35%"}
+::: {.config-path}
+```text
+config/
+  robot/
+    base.yaml
+    devices.yaml
+    devices/
+      *.gps.yaml
+      *.imu.yaml
+      *.lidar.yaml
+      *.camera.yaml
+      *.implement.yaml
+    localisation.yaml
+    path_matching.yaml
+    path_following.yaml
+    teleop.yaml
+  simulation.yaml
+  wgs84_anchor.yaml
+  records.yaml
+  paths/
+    *.traj
+```
+:::
+
+::: {.multi-robot-note}
+The same layout can be extended to several robot directories, each with its
+own ROS 2 namespace.
+:::
+:::
+:::
+
+## How to launch a demo {.generic-launch-slide}
+
+::: {.tirrex-story-intro}
+Once the directory is defined, every demo uses the same TIRREX entry point.
+Only the configuration, namespace and execution mode change.
+:::
+
+::: {.command-spacer}
+:::
+
+```bash
+ros2 launch tirrex_core core.launch.py \
+  demo_configuration_directory:=/path/to/tirrex_adap2e/config \
+  robot_namespace:=adap2e mode:=simulation_gazebo
+
+ros2 launch tirrex_core robot/robot_localisation.launch.py \
+  robot_configuration_directory:=/path/to/tirrex_adap2e/config/robot \
+  robot_namespace:=adap2e mode:=simulation_gazebo
+
+ros2 launch tirrex_core robot/robot_path_following.launch.py \
+  demo_configuration_directory:=/path/to/tirrex_adap2e/config \
+  robot_namespace:=adap2e mode:=simulation_gazebo
+```
+
+::: {.command-spacer}
+:::
+
+::: {.columns .launch-parameter-overview}
+::: {.column width="52%"}
+### Launch parameters
+
+::: {.launch-parameters}
+- `demo_configuration_directory` — specifies the path to the demo configuration directory
+- `robot_namespace` — sets the robot ROS 2 namespace
+- `mode` — selects the execution environment
+:::
+:::
+
+::: {.column width="48%"}
+### Available modes
+
+::: {.launch-modes}
+- `live` — starts the robot, devices and algorithms
+- `simulation_<simulator>` — starts the simulator, spawns the robot and runs the algorithms<br><span class="simulator-values">Available values: `gazebo` · `isaac` · `4dv`</span>
+:::
+:::
+:::
+
+::: {.reference-demo-note}
+The reference configuration is available in
+[Tirrex-Roboterrium/tirrex_adap2e](https://github.com/Tirrex-Roboterrium/tirrex_adap2e)
+and is used throughout the rest of this presentation.
+:::
+
+## What is launched
+
+The Adap2e simulation launches a complete robot runtime: mobile-base and
+virtual-implement controllers, Gazebo sensor bridges, localisation, and path
+following.
+
+- Path following and teleoperation both publish to `base/cmd_mux`, where
+  higher-priority manual commands take precedence.
+- Additional command sources can register with the same multiplexer without
+  changing the mobile-base controller.
+- The virtual implement follows the same command pipeline: teleoperation,
+  command mux, then controller.
+
+![](img/02_configuring_tirrex_demo/what_is_launched.svg){.what-is-launched-diagram}

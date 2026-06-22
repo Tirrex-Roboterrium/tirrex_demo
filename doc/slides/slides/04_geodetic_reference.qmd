@@ -1,0 +1,58 @@
+# Geodetic reference
+
+## Geodetic reference
+
+::: {.columns .config-slide}
+::: {.column width="48%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  wgs84_anchor.yaml
+```
+
+:::
+
+#### Geographic anchor
+
+```yaml
+latitude: 45.76345967
+longitude: 3.10955017
+altitude: 351.9
+```
+:::
+
+::: {.column width="52%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Field | Meaning |
+| --- | --- |
+| `latitude` | WGS84 latitude of the local origin |
+| `longitude` | WGS84 longitude of the local origin |
+| `altitude` | WGS84 altitude of the local origin |
+
+:::
+
+#### Purposes
+
+::: {.config-table}
+
+| Used by | Purpose |
+| --- | --- |
+| GPS plugins | Converts fixes to local ENU |
+| Simulation | Aligns simulated GPS with the field |
+| Trajectories | Shares the same metric origin |
+| Localisation | Defines the robot-to-world frame |
+
+:::
+
+
+:::
+:::
+

@@ -1,0 +1,53 @@
+flowchart LR
+  input["Joystick / keyboard"]
+
+  subgraph teleoperation["Teleoperation nodes"]
+    direction TB
+    base_teleop["base/teleop"]
+    hitch_teleop["rear_hitch/teleop"]
+    arm_teleop["telescopic_arm/teleop"]
+  end
+
+  subgraph muxes["Command muxes"]
+    direction TB
+    base_mux["base/cmd_mux"]
+    hitch_mux["rear_hitch/cmd_mux"]
+    arm_mux["telescopic_arm/cmd_mux"]
+  end
+
+  subgraph controllers["Controllers"]
+    direction TB
+    base_controller["base/controller"]
+    hitch_controller["rear_hitch/controller"]
+    arm_controller["telescopic_arm/controller"]
+  end
+
+  subgraph outputs["Robot systems"]
+    direction TB
+    base["Mobile base"]
+    hitch["Three-point hitch"]
+    arm["Telescopic arm"]
+  end
+
+  input --> base_teleop
+  input --> hitch_teleop
+  input --> arm_teleop
+  base_teleop --> base_mux --> base_controller --> base
+  hitch_teleop --> hitch_mux --> hitch_controller --> hitch
+  arm_teleop --> arm_mux --> arm_controller --> arm
+
+  classDef inputStyle fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  classDef processing fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef routing fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef output fill:#fff6d8,stroke:#c9a227,color:#111,rx:6,ry:6
+
+  class input inputStyle
+  class base_teleop,hitch_teleop,arm_teleop processing
+  class base_mux,hitch_mux,arm_mux routing
+  class base_controller,hitch_controller,arm_controller processing
+  class base,hitch,arm output
+
+  style teleoperation fill:#f0fbff,stroke:#65a9c7,rx:6,ry:6
+  style muxes fill:#f8f2ff,stroke:#8b6fc6,rx:6,ry:6
+  style controllers fill:#f0fbff,stroke:#65a9c7,rx:6,ry:6
+  style outputs fill:#fffaf0,stroke:#d4b24f,rx:6,ry:6

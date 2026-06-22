@@ -1,0 +1,78 @@
+flowchart LR
+  subgraph sources["Robot data sources"]
+    base["Mobile base controller"]
+    gps_sensor["GPS receiver"]
+    imu_sensor["IMU"]
+  end
+
+  subgraph ros2_topics["ROS2 data topics"]
+    odom_topic["controller odometry<br/>nav_msgs/msg/Odometry"]
+    nmea_topic["gps/nmea_sentence<br/>nmea_msgs/msg/Sentence"]
+    imu_topic["imu/data<br/>sensor_msgs/msg/Imu"]
+  end
+
+  subgraph plugins["Localisation plugin nodes"]
+    odo_plugin["romea_localisation_odo_plugin<br/>controller odometry"]
+    gps_plugin["romea_localisation_gps_plugin<br/>GPS NMEA data"]
+    imu_plugin["romea_localisation_imu_plugin<br/>IMU data"]
+  end
+
+  subgraph observation_inputs["Localisation observations"]
+    twist["twist<br/>ObservationTwist2DStamped"]
+    position["position<br/>ObservationPosition2DStamped"]
+    course["course<br/>ObservationCourseStamped"]
+    angular_speed["angular_speed<br/>ObservationAngularSpeedStamped"]
+    attitude["attitude<br/>ObservationAttitudeStamped"]
+  end
+
+  subgraph localisation_core["Robot-to-world localisation core"]
+    filter["localisation filter<br/>romea_core_localisation"]
+  end
+
+  subgraph outputs["ROS2 outputs"]
+    filtered_odom["filtered_odom<br/>Odometry"]
+    tf["map -> base_footprint<br/>TF transform"]
+    status["status<br/>LocalisationStatus"]
+    diagnostics["diagnostics<br/>diagnostic report"]
+  end
+
+  base --> odom_topic
+  gps_sensor --> nmea_topic
+  imu_sensor --> imu_topic
+  odom_topic --> odo_plugin
+  odom_topic --> gps_plugin
+  odom_topic --> imu_plugin
+  nmea_topic --> gps_plugin
+  imu_topic --> imu_plugin
+  odo_plugin --> twist
+  gps_plugin --> position
+  gps_plugin --> course
+  imu_plugin --> angular_speed
+  imu_plugin --> attitude
+  twist --> filter
+  position --> filter
+  course --> filter
+  angular_speed --> filter
+  attitude --> filter
+  filter --> filtered_odom
+  filter --> tf
+  filter --> status
+  filter --> diagnostics
+
+  classDef pluginStyle fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef obs fill:#fff6d8,stroke:#c9a227,color:#111,rx:6,ry:6
+  classDef coreStyle fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef ros2 fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  class base,gps_sensor,imu_sensor ros2
+  class odom_topic,nmea_topic,imu_topic ros2
+  class odo_plugin,gps_plugin,imu_plugin pluginStyle
+  class twist,position,course,angular_speed,attitude obs
+  class filter coreStyle
+  class filtered_odom,tf,status,diagnostics ros2
+
+  style sources fill:#f6faff,stroke:#9abbe3,rx:6,ry:6
+  style ros2_topics fill:#f6faff,stroke:#9abbe3,rx:6,ry:6
+  style plugins fill:#f7fff7,stroke:#9ecf9e,rx:6,ry:6
+  style observation_inputs fill:#fffaf0,stroke:#dec86b,rx:6,ry:6
+  style localisation_core fill:#faf7ff,stroke:#b8a4dd,rx:6,ry:6
+  style outputs fill:#f6faff,stroke:#9abbe3,rx:6,ry:6

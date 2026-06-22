@@ -1,0 +1,233 @@
+# Localisation
+
+## Localisation architecture
+
+::: {.localisation-slide}
+
+![](img/05_localisation/localisation_architecture.svg){.localisation-architecture-diagram}
+
+::: {.localisation-architecture-summary}
+::: {.localisation-stages}
+1. Drivers and the mobile-base controller publish raw ROS 2 data.
+2. Plugins convert each stream into typed Bayesian observations.
+3. A configurable Kalman filter fuses them into `nav_msgs/msg/Odometry`.
+:::
+
+::: {.localisation-observation-table}
+
+| Proprioceptive observations | Exteroceptive observations |
+| --- | --- |
+| `twist` | `position` |
+| `linear speeds` | `course` |
+| `angular speed` | `pose` |
+| `attitude` | `range` |
+
+:::
+:::
+
+New information sources only require a compatible observation plugin and the
+corresponding updater configuration. ROMEA also provides plugins for RTLS
+systems and radars, and alternative Kalman filters.
+
+:::
+
+## Localisation plugin profiles
+
+::: {.columns .config-slide}
+::: {.column width="58%"}
+
+#### Meta-description launch entries
+
+::: {.config-path}
+
+```text
+config/
+  wgs84_anchor.yaml
+  robot/
+    base.yaml
+    devices/
+      *.gps.yaml
+      *.imu.yaml
+```
+
+:::
+
+```yaml
+# base.yaml
+launch:
+  - include:
+      file: "$(find-pkg-share romea_mobile_base_meta_bringup)/profile/localisation_plugin.launch.py"
+      arg:
+        - {name: controller_topic, value: odom}
+
+# devices/*.gps.yaml
+launch:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/localisation_plugin.launch.py"
+      arg:
+        - {name: wgs84_anchor_file_path, value: $(var wgs84_anchor_file_path)}
+        - {name: odom_topic, value: /$(var robot_namespace)/base/controller/odom}
+
+# devices/*.imu.yaml
+launch:
+  - include:
+      file: "$(find-pkg-share romea_imu_meta_bringup)/profile/localisation_plugin.launch.py"
+      arg:
+        - {name: odom_topic, value: /$(var robot_namespace)/base/controller/odom}
+```
+
+:::
+
+::: {.column width="42%"}
+
+#### What is launched ? 
+
+::: {.config-table}
+
+| File | Plugin output |
+| --- | --- |
+| `base.yaml` | odometry observations |
+| `*.gps.yaml` | position and course observations |
+| `*.imu.yaml` | angular speed and attitude observations |
+
+:::
+
+::: {.config-table}
+
+| Argument | Purpose |
+| --- | --- |
+| `controller_topic` | Selects base odometry source |
+| `wgs84_anchor_file_path` | Converts GPS to local ENU |
+| `odom_topic` | Helps GPS/IMU interpretation |
+
+:::
+
+#### Notes
+
+::: {.compact-notes}
+
+- The filter does not consume raw sensor topics directly.
+- Each plugin converts one runtime stream.
+- Outputs are typed localisation observations.
+- These observations are consumed by the Kalman filter.
+
+:::
+
+:::
+:::
+
+## Localisation filter configuration
+
+::: {.columns .config-slide}
+::: {.column width="48%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  wgs84_anchor.yaml
+  robot/
+    localisation.yaml
+```
+
+:::
+
+#### Kalman filter
+
+::: {.scroll-code}
+
+```yaml
+filter:
+  state_pool_size: 1000
+predictor:
+  maximal_dead_recknoning_travelled_distance: 2.
+  maximal_dead_recknoning_elapsed_time: 10.
+angular_speed_updater:
+  minimal_rate: 10
+twist_updater:
+  minimal_rate: 0
+linear_speeds_updater:
+  minimal_rate: 10
+position_updater:
+  minimal_rate: 1
+  trigger: always
+  mahalanobis_distance_rejection_threshold: 10.
+course_updater:
+  minimal_rate: 1
+  trigger: once
+  mahalanobis_distance_rejection_threshold: 10.
+pose_updater:
+  minimal_rate: 0
+  trigger: always
+  mahalanobis_distance_rejection_threshold: 10.
+attitude_updater:
+  minimal_rate: 10
+publish_rate: 10
+debug: true
+```
+
+:::
+
+:::
+
+::: {.column width="52%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `filter` | `state_pool_size` | Buffered filter states |
+| `predictor` | dead-reckoning limits | Reset protection |
+| `<updater>` | `minimal_rate` | Expected rate; `0` inhibits |
+| `<updater>` | `trigger` | `always` or `once` |
+| `<updater>` | `mahalanobis...` | Outlier rejection threshold |
+| root | `publish_rate` | Output publication rate |
+| root | `debug` | Enables debug outputs |
+
+:::
+
+::: {.config-table}
+
+| Updater | Typical producer | Type |
+| --- | --- | --- |
+| `twist_updater` | odometry plugin | proprioceptive |
+| `linear_speeds_updater` | odometry plugin | proprioceptive |
+| `position_updater` | GPS plugin | exteroceptive |
+| `course_updater` | GPS plugin | exteroceptive |
+| `angular_speed_updater` | IMU plugin | proprioceptive |
+| `attitude_updater` | IMU plugin | proprioceptive |
+
+:::
+
+#### Notes
+
+::: {.compact-notes}
+
+- The filter works in the local ENU frame defined by `wgs84_anchor.yaml`.
+- Each updater consumes one typed observation stream.
+- `trigger` applies only to exteroceptive updaters.
+- An updater is inhibited when its section is omitted.
+- `minimal_rate: 0` also inhibits an updater.
+
+:::
+
+:::
+:::
+
+## Localisation launch flow
+
+::: {.localisation-flow-slide}
+
+![](img/05_localisation/localisation_launch_flow.svg){.localisation-launch-flow-diagram}
+
+From the mobile-base and sensor meta-descriptions, TIRREX composes the robot
+through `romea_robot_meta_bringup`. The component-specific
+`romea_*_meta_bringup` profiles start the odometry, GPS and IMU observation
+plugins. In parallel, `robot_localisation.launch.py` starts the Kalman filter
+from `localisation.yaml`; both branches meet on typed observations.
+
+:::

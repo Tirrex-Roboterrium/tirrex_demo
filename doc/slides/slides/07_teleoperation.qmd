@@ -1,0 +1,172 @@
+# Teleoperation
+
+## What can be teleoperated?
+
+::: {.teleoperation-scope-intro}
+Teleoperation converts joystick or keyboard inputs into commands adapted to
+each controllable part of the robot.
+:::
+
+::: {.teleoperation-scope-grid}
+::: {.teleoperation-scope-item}
+**Mobile base**
+
+- Linear and angular velocity
+- Front and rear steering angles
+- Skid, omni, one-axle and two-axle kinematics
+:::
+
+::: {.teleoperation-scope-item}
+**Integrated actuators**
+
+- Front or rear three-point hitches
+- Lift and telescopic arms
+:::
+:::
+
+::: {.teleoperation-scope-flow}
+![](img/07_teleoperation/teleoperation_scope_flow.svg){.teleoperation-scope-flow-diagram}
+
+One input device can drive several teleoperation nodes. Each robot subsystem
+keeps its own command mux and controller, so manual commands can coexist with
+other command sources.
+:::
+
+##  Base teleoperation configuration
+
+::: {.columns .config-slide .teleoperation-config-slide}
+::: {.column width="50%"}
+
+#### Configuration files
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    teleop.yaml
+    base.yaml
+    devices/
+      remote_controller.joystick.yaml
+```
+
+:::
+
+```yaml
+cmd_output:
+  # Select the command matching the mobile base:
+  message_type: romea_mobile_base_msgs/SkidSteeringCommand
+  # message_type: romea_mobile_base_msgs/OneAxleSteeringCommand
+  # message_type: romea_mobile_base_msgs/TwoAxleSteeringCommand
+  message_priority: 100
+
+cmd_range:
+  maximal_linear_speed:
+    slow_mode: 1.0
+    turbo_mode: 2.0
+
+  # SkidSteeringCommand
+  maximal_angular_speed:
+    slow_mode: 1.0
+    turbo_mode: 2.0
+
+  # OneAxleSteeringCommand
+  # maximal_steering_angle: 0.6
+
+  # TwoAxleSteeringCommand
+  # maximal_front_steering_angle: 0.6
+  # maximal_rear_steering_angle: 0.6
+```
+
+:::
+
+::: {.column width="50%"}
+
+#### Key fields
+
+::: {.config-table}
+
+| Field | Purpose |
+| --- | --- |
+| `message_type` | Matches the mobile-base kinematics |
+| `message_priority` | Registers teleoperation in `base/cmd_mux` |
+| `slow_mode` | Limits commands for precise manoeuvres |
+| `turbo_mode` | Enables the extended speed range |
+| steering/angular limits | Bound the corresponding command |
+
+:::
+
+#### Command families
+
+::: {.config-table}
+
+| Kinematics | Command message |
+| --- | --- |
+| Skid/differential | `SkidSteeringCommand` |
+| One steering axle / 2WS | `OneAxleSteeringCommand` |
+| Two steering axles / 4WS4WD | `TwoAxleSteeringCommand` |
+| Omnidirectional | `OmniSteeringCommand` |
+
+:::
+
+Teleoperation normally uses a higher mux priority than autonomous
+path-following commands, so the operator can immediately take control.
+
+:::
+:::
+
+## Joystick mapping
+
+::: {.teleoperation-layouts}
+::: {.teleoperation-layout-card}
+
+**Skid steering**
+
+![](img/07_teleoperation/dualshock_skid_steering.svg)
+
+:::
+
+::: {.teleoperation-layout-card}
+
+**One-axle steering**
+
+![](img/07_teleoperation/xbox_one_axle_steering.svg)
+
+:::
+
+::: {.teleoperation-layout-card}
+
+**Two-axle steering**
+
+![](img/07_teleoperation/xbox_360_axle_steering.svg)
+
+:::
+
+::: {.teleoperation-layout-card}
+
+**Front and rear implements**
+
+![](img/07_teleoperation/dualsens_implements.svg)
+
+:::
+:::
+
+## Keyboard mapping
+
+::: {.keyboard-mapping-intro}
+The `pynput_teleop` node converts keyboard events into the same
+`sensor_msgs/msg/Joy` interface as a physical controller.
+:::
+
+::: {.keyboard-mapping-figure}
+![](img/07_teleoperation/teleop_keyboard_qwerty.svg)
+:::
+
+::: {.keyboard-mapping-note}
+- The arrow keys always mean **Forward**, **Reverse**, **Left** and **Right**,
+  while the selected teleoperation node converts these inputs into commands
+  matching the mobile-base kinematics.
+- The `two_axle_steering` teleoperation node applies double-Ackermann steering:
+  `rear_steering_angle = -front_steering_angle`.
+- Keyboard teleoperation currently controls one configured implement at a time.
+:::

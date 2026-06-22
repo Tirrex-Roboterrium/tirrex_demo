@@ -1,0 +1,52 @@
+flowchart LR
+  subgraph tirrex["TIRREX core"]
+    direction LR
+    subgraph user["Demo arguments"]
+      direction TB
+      mode["mode"]
+      config_dir["demo configuration directory"]
+    end
+
+    subgraph tirrex_launch["simulator.launch.py"]
+      direction TB
+      resolved["resolved arguments<br/><br/>simulator_type<br/>simulation.yaml<br/>wgs84_anchor.yaml"]
+    end
+  end
+
+  subgraph romea["ROMEA simulation meta-bringup"]
+    direction TB
+    meta_sim["simulator.launch.py"]
+    subgraph backend_launch["simulators/&lt;simulator_type&gt;_simulator.launch.py"]
+      direction TB
+      world_args["resolved arguments<br/><br/>world_package<br/>world_name"]
+    end
+  end
+
+  subgraph simulator["Simulator"]
+    direction TB
+    backend["Gazebo Classic or Gazebo"]
+  end
+
+  mode --> tirrex_launch
+  config_dir --> tirrex_launch
+  tirrex_launch --> meta_sim
+  meta_sim --> backend_launch
+  backend_launch --> backend
+
+  classDef config fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  classDef tirrex fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef launch fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef resolved_args fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef sim fill:#fff6d8,stroke:#c9a227,color:#111,rx:6,ry:6
+
+  class mode,config_dir config
+  class resolved,world_args resolved_args
+  class meta_sim launch
+  class backend sim
+
+  style user fill:#f6faff,stroke:#9abbe3,rx:6,ry:6
+  style tirrex_launch fill:#eaf7ea,stroke:#5c9f5c,rx:6,ry:6
+  style tirrex fill:#fff3e6,stroke:#d89b55,rx:6,ry:6
+  style romea fill:#f0fbff,stroke:#65a9c7,rx:6,ry:6
+  style backend_launch fill:#eaf7ea,stroke:#5c9f5c,rx:6,ry:6
+  style simulator fill:#fffaf0,stroke:#d4b24f,rx:6,ry:6

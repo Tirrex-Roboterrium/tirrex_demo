@@ -1,0 +1,17 @@
+flowchart LR
+  C["YAML configuration<br/>what to launch"] --> T["TIRREX<br/>orchestration"]
+  T --> M["ROMEA meta-bringup<br/>how to launch it"]
+  M --> R["ROS 2 runtime"]
+  R --> S["Simulation"]
+  R --> L["Live robot"]
+  R --> B["Record & replay"]
+
+  classDef config fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  classDef resolved fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef launch fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef runtime fill:#fff6d8,stroke:#c9a227,color:#111,rx:6,ry:6
+
+  class C config
+  class T resolved
+  class M launch
+  class R,S,L,B runtime

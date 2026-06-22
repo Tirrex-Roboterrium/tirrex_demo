@@ -1,0 +1,112 @@
+# Simulation
+
+## Simulation configuration
+
+::: {.columns .config-slide .simulation-config-slide}
+::: {.column width="52%"}
+
+#### Configuration files
+
+::: {.config-path}
+
+```text
+config/
+  simulation.yaml
+  wgs84_anchor.yaml
+  robot/
+    base.yaml
+    devices/
+      *.yaml
+```
+
+:::
+
+```yaml
+simulators:
+  gazebo_classic:
+    world_package: romea_simulation_gazebo_worlds
+    world_name: friction_cone.world
+  gazebo:
+    world_package: romea_simulation_gazebo_worlds
+    world_name: gz_empty.sdf
+
+entities:
+  - name: adap2e
+    initial_x: 0.0
+    initial_y: 0.0
+    initial_z: 0.0
+    initial_roll: 0.0
+    initial_pitch: 0.0
+    initial_yaw: 90.0
+```
+
+:::
+
+::: {.column width="48%"}
+
+#### Key fields
+
+::: {.config-table}
+
+| Section | Field | Purpose |
+| --- | --- | --- |
+| `simulators` | backend name | Selects a simulator |
+|  | `world_package` | ROS package containing the world |
+|  | `world_name` | World file to load |
+| `entities` | `name` | Matches the robot namespace |
+|  | initial pose | Spawn position and orientation |
+
+:::
+
+#### Simulation modes
+
+::: {.config-table}
+
+| Mode | Backend |
+| --- | --- |
+| `simulation` | Auto-selects an installed Gazebo |
+| `simulation_gazebo_classic` | Gazebo Classic |
+| `simulation_gazebo` | Gazebo Sim / `gz` |
+| `simulation_isaac` | Reserved for Isaac Sim |
+
+:::
+
+The WGS84 anchor provides the geographic reference when supported by the
+selected backend. Missing entity pose fields default to `0.0`.
+
+:::
+:::
+
+## Simulation launch flow
+
+::: {.simulation-dual-flow}
+::: {.simulation-flow-section}
+
+### Simulator launch flow
+::: {.simulation-flow-figure}
+![](img/08_simulation/simulator_launch_flow.svg){.simulation-dual-flow-diagram}
+:::
+
+::: {.simulation-flow-explanation}
+`tirrex_core/simulator.launch.py` derives the backend from `mode`, resolves
+`simulation.yaml` and `wgs84_anchor.yaml`, then delegates world startup to
+`romea_simulation_meta_bringup`. The backend launch loads the selected world
+from its ROS package or simulator resource path.
+:::
+:::
+
+::: {.simulation-flow-section}
+
+### Entity spawn flow
+::: {.simulation-flow-figure}
+![](img/08_simulation/entity_spawn_flow.svg){.simulation-dual-flow-diagram}
+:::
+
+::: {.simulation-flow-explanation}
+`robot/robot.launch.py` generates the robot meta-description and forwards the
+entity type, simulator backend and namespace to ROMEA. The simulation
+meta-bringup generates the simulation URDF, applies the pose from
+`simulation.yaml`, and invokes the backend-specific spawn launch file.
+:::
+:::
+:::

@@ -1,0 +1,195 @@
+# Navigation
+
+## Path-following architecture
+
+::: {.navigation-architecture-slide}
+
+![](img/06_navigation/path_following_architecture.svg){.path-following-architecture-diagram}
+
+Path matching locates the robot on the selected trajectory. Path following then computes a mobile-base command from the path-relative state and sends it through the command multiplexer, where it can coexist with teleoperation and other command sources.
+
+:::
+
+## Path matching configuration
+
+::: {.columns .config-slide}
+::: {.column width="48%"}
+
+#### Configuration files
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    path_matching.yaml
+  paths/
+    cezeaux_slam1.traj
+```
+
+:::
+
+```yaml
+path: cezeaux_slam1.traj
+prediction_time_horizon: 1.0
+path_frame_id: map
+autoconfigure: true
+autostart: true
+display: true
+```
+
+:::
+
+::: {.column width="52%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Field | Purpose |
+| --- | --- |
+| `path` | Selects a file from `config/paths` |
+| `prediction_time_horizon` | Projects the robot state forward |
+| `path_frame_id` | Frame used for markers |
+| `autoconfigure` | Configures the lifecycle node |
+| `autostart` | Starts matching automatically |
+| `display` | Publishes trajectory markers |
+
+:::
+
+#### Supported trajectory formats
+
+::: {.config-table}
+
+| Version | Representation |
+| --- | --- |
+| `2` | Continuous sampled path with sections and annotations |
+| `4` | Agricultural rows and turns: `row_path`, `row_line`, `turn_path` |
+
+:::
+
+::: {.navigation-config-note}
+Both formats use the WGS84 origin and local ENU coordinates shared with localisation.
+:::
+
+:::
+:::
+
+## Path-following configuration
+
+::: {.columns .config-slide .navigation-controller-slide}
+::: {.column width="52%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    path_following.yaml
+```
+
+:::
+
+::: {.navigation-controller-code}
+
+```yaml
+sampling_period: 10.0
+
+longitudinal_control:
+  selected: classic
+  minimal_linear_speed: 0.3
+
+lateral_control:
+  selected: predictive
+  predictive:
+    gains:
+      front_kd: 0.7
+      rear_kd: 0.4
+    prediction:
+      horizon: 10
+
+sliding_observer:
+  selected: extended_cinematic
+  extended_cinematic:
+    gains:
+      lateral_deviation: 7.0
+      course_deviation: 8.0
+    filter_weights:
+      lateral_deviation: 0.09
+      course_deviation: 0.10
+      front_sliding_angle: 0.11
+      rear_sliding_angle: 0.12
+
+setpoint:
+  desired_linear_speed: 1.0
+  desired_lateral_deviation: 0.0
+  desired_course_deviation: 0.0
+
+cmd_output:
+  message_type: romea_mobile_base_msgs/TwoAxleSteeringCommand
+  priority: 10
+  rate: 10.0
+
+debug: true
+```
+
+:::
+:::
+
+::: {.column width="48%"}
+
+#### Controller selection
+
+::: {.config-table}
+
+| Command type | Typical mobile base | Lateral control |
+| --- | --- | --- |
+| `OneAxleSteeringCommand` | Front/rear steering | `classic`, `predictive` |
+| `TwoAxleSteeringCommand` | Four-wheel steering | `classic`, `predictive`, `front_rear_decoupled` |
+| `SkidSteeringCommand` | Differential/tracks | Backstepping and predictive variants |
+
+:::
+
+#### Sliding observers
+
+::: {.config-table}
+
+| Command type | Available selectors |
+| --- | --- |
+| One/two axle steering | `none`, `extended_cinematic`, `extended_lyapunov` |
+| Skid steering | `none`, `picard_skid_backstepping`, `picard_skid_lyapunov` |
+
+:::
+
+#### Key settings
+
+::: {.config-table}
+
+| Section | Purpose |
+| --- | --- |
+| `longitudinal_control` | Selects speed control |
+| `lateral_control` | Selects steering control and gains |
+| `setpoint` | Desired speed and path deviations |
+| `cmd_output/message_type` | Must match the mobile base architecture |
+| `cmd_output/priority` | Priority registered in `base/cmd_mux` |
+| `cmd_output/rate` | Command publication rate |
+
+:::
+:::
+:::
+
+## Navigation launch flow
+
+::: {.navigation-flow-slide}
+
+![](img/06_navigation/navigation_launch_flow.svg){.navigation-flow-diagram}
+
+`robot_path_following.launch.py` resolves the trajectory, matching parameters,
+controller configuration and command type selected for the mobile base. It
+starts the ROMEA matching and path-following nodes; filtered localisation feeds
+the matcher, while the resulting command is registered with `base/cmd_mux`
+before reaching the controller.
+
+:::

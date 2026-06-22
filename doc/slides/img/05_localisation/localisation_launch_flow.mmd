@@ -1,0 +1,70 @@
+flowchart LR
+  subgraph tirrex["TIRREX core"]
+    direction LR
+    subgraph config["Configuration"]
+      direction TB
+      localisation_yaml["localisation.yaml"]
+      base_yaml["base.yaml"]
+      gps_yaml["*.gps.yaml"]
+      imu_yaml["*.imu.yaml"]
+      anchor["wgs84_anchor.yaml"]
+    end
+
+    subgraph robot_launch["robot/robot.launch.py"]
+      direction TB
+      plugin_profiles["localisation plugin profiles"]
+    end
+
+    subgraph localisation_launch["robot/robot_localisation.launch.py"]
+      direction TB
+      node_args["localisation node parameters"]
+    end
+  end
+
+  subgraph romea["ROMEA robot meta-bringup"]
+    direction TB
+    romea_robot_launch["robot.launch.py"]
+  end
+
+  subgraph runtime["Localisation runtime"]
+    direction LR
+    subgraph plugins["Localisation plugins"]
+      direction TB
+      odo_plugin["odometry plugin"]
+      gps_plugin["GPS plugin"]
+      imu_plugin["IMU plugin"]
+    end
+
+    subgraph core["Robot-to-world localisation core"]
+      direction TB
+      filter["robot_to_world_kalman_localisation_node"]
+    end
+  end
+
+  localisation_yaml --> localisation_launch
+  base_yaml --> robot_launch
+  gps_yaml --> robot_launch
+  imu_yaml --> robot_launch
+  anchor --> robot_launch
+  robot_launch --> romea_robot_launch
+  romea_robot_launch --> plugins
+  localisation_launch --> filter
+  odo_plugin --> filter
+  gps_plugin --> filter
+  imu_plugin --> filter
+
+  classDef configStyle fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  classDef launch fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef coreStyle fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  class localisation_yaml,base_yaml,gps_yaml,imu_yaml,anchor configStyle
+  class plugin_profiles,node_args,romea_robot_launch,odo_plugin,gps_plugin,imu_plugin launch
+  class filter coreStyle
+
+  style config fill:#f6faff,stroke:#9abbe3,rx:6,ry:6
+  style robot_launch fill:#eaf7ea,stroke:#5c9f5c,rx:6,ry:6
+  style localisation_launch fill:#eaf7ea,stroke:#5c9f5c,rx:6,ry:6
+  style tirrex fill:#fff3e6,stroke:#d89b55,rx:6,ry:6
+  style romea fill:#f0fbff,stroke:#65a9c7,rx:6,ry:6
+  style plugins fill:#f7fff7,stroke:#9ecf9e,rx:6,ry:6
+  style core fill:#faf7ff,stroke:#b8a4dd,rx:6,ry:6
+  style runtime fill:#fffaf0,stroke:#d4b24f,rx:6,ry:6

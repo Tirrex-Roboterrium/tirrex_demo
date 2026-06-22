@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1062" height="389" viewBox="0 0 1062 389">
+<defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.35"/></filter><linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a2a"/><stop offset="1" stop-color="#191919"/></linearGradient><linearGradient id="key" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#444"/><stop offset="1" stop-color="#303030"/></linearGradient></defs>
+<style>.key{fill:url(#key);stroke:#151515;stroke-width:2}.keyHi{fill:#2d8cff;stroke:#8bc2ff;stroke-width:2.4}.lab{font:bold 14px Arial,sans-serif;fill:#d9d9d9;text-anchor:middle;dominant-baseline:middle}.sub{font:10px Arial,sans-serif;fill:#9fb4c8;text-anchor:middle}.act{font:bold 9px Arial,sans-serif;fill:white;text-anchor:middle}.ico{font:bold 18px Arial,sans-serif;fill:white;text-anchor:middle;dominant-baseline:middle}</style>
+<rect x="12" y="16" width="1038" height="357" rx="14" fill="url(#body)" filter="url(#shadow)" stroke="#111"/>
+<rect id="KEY_ESC" class="key" x="26.0" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="50.0" y="44.2">Esc</text>
+<rect id="KEY_F1" class="key" x="108.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="132.5" y="44.2">F1</text>
+<rect id="KEY_F2" class="key" x="163.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="187.5" y="44.2">F2</text>
+<rect id="KEY_F3" class="key" x="218.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="242.5" y="44.2">F3</text>
+<rect id="KEY_F4" class="key" x="273.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="297.5" y="44.2">F4</text>
+<rect id="KEY_F5" class="key" x="356.0" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="380.0" y="44.2">F5</text>
+<rect id="KEY_F6" class="key" x="411.0" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="435.0" y="44.2">F6</text>
+<rect id="KEY_F7" class="key" x="466.0" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="490.0" y="44.2">F7</text>
+<rect id="KEY_F8" class="key" x="521.0" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="545.0" y="44.2">F8</text>
+<rect id="KEY_F9" class="key" x="603.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="627.5" y="44.2">F9</text>
+<rect id="KEY_F10" class="key" x="658.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="682.5" y="44.2">F10</text>
+<rect id="KEY_F11" class="key" x="713.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="737.5" y="44.2">F11</text>
+<rect id="KEY_F12" class="key" x="768.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="792.5" y="44.2">F12</text>
+<rect id="KEY_PRINTSCREEN" class="key" x="878.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="902.5" y="44.2">PrtSc</text>
+<rect id="KEY_SCROLLLOCK" class="key" x="933.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="957.5" y="44.2">ScrLk</text>
+<rect id="KEY_PAUSE" class="key" x="988.5" y="26.0" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="1012.5" y="44.2">Pause</text>
+<rect id="KEY_INSERT" class="key" x="878.5" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="902.5" y="113.0">Ins</text>
+<rect id="KEY_HOME" class="keyHi" x="933.5" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="957.5" y="113.0">Home</text>
+<text class="act" x="957.5" y="135.8" font-size="9">↑ tool</text>
+<rect id="KEY_PAGEUP" class="key" x="988.5" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="1012.5" y="113.0">PgUp</text>
+<rect id="KEY_DELETE" class="key" x="878.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="902.5" y="168.0">Del</text>
+<rect id="KEY_END" class="keyHi" x="933.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="957.5" y="168.0">End</text>
+<text class="act" x="957.5" y="190.8" font-size="9">↓ tool</text>
+<rect id="KEY_PAGEDOWN" class="key" x="988.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="1012.5" y="168.0">PgDn</text>
+<rect id="KEY_UP" class="keyHi" x="933.5" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="957.5" y="278.0">↑</text>
+<text class="act" x="957.5" y="300.8" font-size="9">Forward</text>
+<rect id="KEY_LEFT" class="keyHi" x="878.5" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="902.5" y="333.0">←</text>
+<text class="act" x="902.5" y="355.8" font-size="9">Left</text>
+<rect id="KEY_DOWN" class="keyHi" x="933.5" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="957.5" y="333.0">↓</text>
+<text class="act" x="957.5" y="355.8" font-size="9">Reverse</text>
+<rect id="KEY_RIGHT" class="keyHi" x="988.5" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="1012.5" y="333.0">→</text>
+<text class="act" x="1012.5" y="355.8" font-size="9">Right</text>
+<rect id="KEY_BACKQUOTE" class="key" x="26.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="50.0" y="113.0">`</text>
+<text class="sub" x="50.0" y="132.8">~</text>
+<rect id="KEY_1" class="key" x="81.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="105.0" y="113.0">1</text>
+<text class="sub" x="105.0" y="132.8">!</text>
+<rect id="KEY_2" class="key" x="136.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="160.0" y="113.0">2</text>
+<text class="sub" x="160.0" y="132.8">@</text>
+<rect id="KEY_3" class="key" x="191.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="215.0" y="113.0">3</text>
+<text class="sub" x="215.0" y="132.8">#</text>
+<rect id="KEY_4" class="key" x="246.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="270.0" y="113.0">4</text>
+<text class="sub" x="270.0" y="132.8">$</text>
+<rect id="KEY_5" class="key" x="301.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="325.0" y="113.0">5</text>
+<text class="sub" x="325.0" y="132.8">%</text>
+<rect id="KEY_6" class="key" x="356.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="380.0" y="113.0">6</text>
+<text class="sub" x="380.0" y="132.8">^</text>
+<rect id="KEY_7" class="key" x="411.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="435.0" y="113.0">7</text>
+<text class="sub" x="435.0" y="132.8">&amp;</text>
+<rect id="KEY_8" class="key" x="466.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="490.0" y="113.0">8</text>
+<text class="sub" x="490.0" y="132.8">*</text>
+<rect id="KEY_9" class="key" x="521.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="545.0" y="113.0">9</text>
+<text class="sub" x="545.0" y="132.8">(</text>
+<rect id="KEY_0" class="key" x="576.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="600.0" y="113.0">0</text>
+<text class="sub" x="600.0" y="132.8">)</text>
+<rect id="KEY_MINUS" class="key" x="631.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="655.0" y="113.0">-</text>
+<text class="sub" x="655.0" y="132.8">_</text>
+<rect id="KEY_EQUAL" class="key" x="686.0" y="94.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="710.0" y="113.0">=</text>
+<text class="sub" x="710.0" y="132.8">+</text>
+<rect id="KEY_BACKSPACE" class="key" x="741.0" y="94.8" width="103.0" height="48.0" rx="6"/>
+<text class="lab" x="792.5" y="113.0" font-size="11">Backspace</text>
+<rect id="KEY_TAB" class="key" x="26.0" y="149.8" width="75.5" height="48.0" rx="6"/>
+<text class="lab" x="63.8" y="168.0">Tab</text>
+<rect id="KEY_Q" class="key" x="108.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="132.5" y="168.0">Q</text>
+<rect id="KEY_W" class="key" x="163.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="187.5" y="168.0">W</text>
+<rect id="KEY_E" class="keyHi" x="218.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="242.5" y="168.0">E</text>
+<text class="act" x="242.5" y="190.8" font-size="9">↑ tool</text>
+<rect id="KEY_R" class="keyHi" x="273.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="297.5" y="168.0">R</text>
+<text class="act" x="297.5" y="190.8" font-size="9">↓ tool</text>
+<rect id="KEY_T" class="key" x="328.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="352.5" y="168.0">T</text>
+<rect id="KEY_Y" class="key" x="383.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="407.5" y="168.0">Y</text>
+<rect id="KEY_U" class="key" x="438.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="462.5" y="168.0">U</text>
+<rect id="KEY_I" class="key" x="493.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="517.5" y="168.0">I</text>
+<rect id="KEY_O" class="key" x="548.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="572.5" y="168.0">O</text>
+<rect id="KEY_P" class="key" x="603.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="627.5" y="168.0">P</text>
+<rect id="KEY_LBRACKET" class="key" x="658.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="682.5" y="168.0">[</text>
+<text class="sub" x="682.5" y="187.8">{</text>
+<rect id="KEY_RBRACKET" class="key" x="713.5" y="149.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="737.5" y="168.0">]</text>
+<text class="sub" x="737.5" y="187.8">}</text>
+<rect id="KEY_BACKSLASH" class="key" x="768.5" y="149.8" width="75.5" height="48.0" rx="6"/>
+<text class="lab" x="806.2" y="168.0">\</text>
+<text class="sub" x="806.2" y="187.8">|</text>
+<rect id="KEY_CAPS" class="key" x="26.0" y="204.8" width="89.2" height="48.0" rx="6"/>
+<text class="lab" x="70.6" y="223.0">Caps</text>
+<rect id="KEY_A" class="key" x="122.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="146.2" y="223.0">A</text>
+<rect id="KEY_S" class="key" x="177.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="201.2" y="223.0">S</text>
+<rect id="KEY_D" class="keyHi" x="232.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="256.2" y="223.0">D</text>
+<text class="act" x="256.2" y="245.8" font-size="9">start</text>
+<rect id="KEY_F" class="keyHi" x="287.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="311.2" y="223.0">F</text>
+<text class="act" x="311.2" y="245.8" font-size="9">stop</text>
+<rect id="KEY_G" class="key" x="342.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="366.2" y="223.0">G</text>
+<rect id="KEY_H" class="key" x="397.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="421.2" y="223.0">H</text>
+<rect id="KEY_J" class="key" x="452.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="476.2" y="223.0">J</text>
+<rect id="KEY_K" class="key" x="507.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="531.2" y="223.0">K</text>
+<rect id="KEY_L" class="key" x="562.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="586.2" y="223.0">L</text>
+<rect id="KEY_SEMICOLON" class="key" x="617.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="641.2" y="223.0">;</text>
+<text class="sub" x="641.2" y="242.8">:</text>
+<rect id="KEY_APOS" class="key" x="672.2" y="204.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="696.2" y="223.0">&#x27;</text>
+<text class="sub" x="696.2" y="242.8">&quot;</text>
+<rect id="KEY_ENTER" class="key" x="727.2" y="204.8" width="116.8" height="48.0" rx="6"/>
+<text class="lab" x="785.6" y="223.0">Enter</text>
+<rect id="KEY_LSHIFT" class="key" x="26.0" y="259.8" width="116.8" height="48.0" rx="6"/>
+<text class="lab" x="84.4" y="278.0">Shift</text>
+<rect id="KEY_Z" class="key" x="149.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="173.8" y="278.0">Z</text>
+<rect id="KEY_X" class="key" x="204.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="228.8" y="278.0">X</text>
+<rect id="KEY_C" class="keyHi" x="259.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="283.8" y="278.0">C</text>
+<text class="act" x="283.8" y="300.8" font-size="9">slow</text>
+<rect id="KEY_V" class="keyHi" x="314.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="338.8" y="278.0">V</text>
+<text class="act" x="338.8" y="300.8" font-size="9">turbo</text>
+<rect id="KEY_B" class="key" x="369.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="393.8" y="278.0">B</text>
+<rect id="KEY_N" class="key" x="424.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="448.8" y="278.0">N</text>
+<rect id="KEY_M" class="key" x="479.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="503.8" y="278.0">M</text>
+<rect id="KEY_COMMA" class="key" x="534.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="558.8" y="278.0">,</text>
+<text class="sub" x="558.8" y="297.8">&lt;</text>
+<rect id="KEY_DOT" class="key" x="589.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="613.8" y="278.0">.</text>
+<text class="sub" x="613.8" y="297.8">&gt;</text>
+<rect id="KEY_SLASH" class="key" x="644.8" y="259.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="668.8" y="278.0">/</text>
+<text class="sub" x="668.8" y="297.8">?</text>
+<rect id="KEY_RSHIFT" class="key" x="699.8" y="259.8" width="144.2" height="48.0" rx="6"/>
+<text class="lab" x="771.9" y="278.0">Shift</text>
+<rect id="KEY_LCTRL" class="key" x="26.0" y="314.8" width="61.8" height="48.0" rx="6"/>
+<text class="lab" x="56.9" y="333.0">Ctrl</text>
+<rect id="KEY_FN" class="key" x="94.8" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="118.8" y="333.0">Fn</text>
+<rect id="KEY_WIN" class="key" x="149.8" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="173.8" y="333.0">Win</text>
+<rect id="KEY_LALT" class="key" x="204.8" y="314.8" width="61.8" height="48.0" rx="6"/>
+<text class="lab" x="235.6" y="333.0">Alt</text>
+<rect id="KEY_SPACE" class="key" x="273.5" y="314.8" width="364.2" height="48.0" rx="6"/>
+<text class="lab" x="455.6" y="333.0">Space</text>
+<rect id="KEY_RALT" class="key" x="644.8" y="314.8" width="61.8" height="48.0" rx="6"/>
+<text class="lab" x="675.6" y="333.0">Alt</text>
+<rect id="KEY_MENU" class="key" x="713.5" y="314.8" width="48.0" height="48.0" rx="6"/>
+<text class="lab" x="737.5" y="333.0">Menu</text>
+<rect id="KEY_RCTRL" class="key" x="768.5" y="314.8" width="75.5" height="48.0" rx="6"/>
+<text class="lab" x="806.2" y="333.0">Ctrl</text>
+</svg>

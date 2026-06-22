@@ -1,0 +1,64 @@
+flowchart LR
+  subgraph inputs["Inputs"]
+    direction TB
+    controller_odom["base/controller"]
+    gps["gps"]
+    imu["imu"]
+    implement_feedback["base/implement/controller"]
+    joystick["joystick"]
+    lidar["lidar"]
+    camera["camera"]
+  end
+
+  subgraph navigation["Localisation and navigation"]
+    localisation["localisation"]
+    trajectory["config/paths/*.traj"]
+    matching["path_matching"]
+    following["path_following"]
+  end
+
+  subgraph command_runtime["Commands"]
+    direction TB
+    subgraph base_command["Mobile base command"]
+      direction TB
+      teleop["base/teleop"]
+      mux["base/cmd_mux"]
+      controller_inputs["base/controller"]
+    end
+
+    subgraph implement_command["Implement command"]
+      direction TB
+      implement_teleop["base/implement/teleop"]
+      implement_mux["base/implement/cmd_mux"]
+      implement_controller["base/implement/controller"]
+    end
+  end
+
+  gps --> localisation
+  imu --> localisation
+  controller_odom --> localisation
+  localisation -->|filtered pose| matching
+  trajectory --> matching
+  matching -->|lateral and angular errors| following
+  following -->|path command| mux
+  joystick --> teleop
+  joystick --> implement_teleop
+  teleop -->|manual command| mux
+  mux -->|selected command| controller_inputs
+  implement_teleop -->|manual command| implement_mux
+  implement_mux -->|selected command| implement_controller
+
+  classDef sensor fill:#e8f2ff,stroke:#5b8ec7,color:#111,rx:6,ry:6
+  classDef base fill:#eaf7ea,stroke:#5c9f5c,color:#111,rx:6,ry:6
+  classDef nav fill:#f1eaff,stroke:#8b6fc6,color:#111,rx:6,ry:6
+  classDef config fill:#fff6d8,stroke:#c9a227,color:#111,rx:6,ry:6
+
+  class gps,imu,lidar,camera,joystick sensor
+  class controller_odom,implement_feedback,implement_controller,controller_inputs,mux,teleop,implement_teleop,implement_mux base
+  class localisation,matching,following nav
+  class trajectory config
+
+  style inputs fill:#f6faff,stroke:#9abbe3,rx:6,ry:6
+  style navigation fill:#faf7ff,stroke:#b8a4dd,rx:6,ry:6
+  style base_command fill:#f7fff7,stroke:#9ecf9e,rx:6,ry:6
+  style implement_command fill:#f7fff7,stroke:#9ecf9e,rx:6,ry:6

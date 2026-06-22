@@ -1,0 +1,951 @@
+# Robot system
+
+## Robot configuration
+
+::: {.tirrex-story-intro}
+The robot configuration files follow the description format introduced by the
+ROMEA ecosystem, called **meta-descriptions**. TIRREX uses these files to build
+the complete robot system.
+:::
+
+::: {.columns .robot-files-overview}
+::: {.column width="48%"}
+::: {.config-path}
+```text
+config/
+  robot/
+    base.yaml
+    devices.yaml
+    devices/
+      *.arm.yaml
+      *.gps.yaml
+      *.imu.yaml
+      *.lidar.yaml
+      *.camera.yaml
+      *.implement.yaml
+```
+:::
+:::
+
+::: {.column width="52%"}
+::: {.highlight-box .robot-files-roles}
+- `base.yaml` describes the mobile base
+- `devices.yaml` lists devices and filters them by execution mode
+- `devices/<name>.<type>.yaml` describes each physical device
+- `<type>` selects the corresponding `romea_<type>_meta_bringup` package
+- Device files select a model, location, launch profiles and recordable topics
+:::
+:::
+:::
+
+::: {.robot-files-conclusion}
+TIRREX selects the components available for the current mode, assembles them
+into one robot description and delegates each component to its corresponding
+ROMEA meta-bringup package.
+:::
+
+## What is a meta-description
+
+::: {.tirrex-story-intro}
+A meta-description uses a common structure to identify a component, select its
+supported model, describe where it is mounted on the robot, and define how its
+drivers and/or controllers are launched.
+:::
+
+::: {.columns .meta-description-overview}
+::: {.column .meta-description-example width="40%"}
+### Generic device meta-description
+
+```yaml
+name: front_sensor
+namespace: sensors
+
+configuration:
+  manufacturer: foo
+  model: bar
+  version: "1.0"
+
+location:
+  parent_link: base_link
+  xyz: [0.5, 0.0, 0.8]
+  rpy: [0.0, 0.0, 0.0]
+
+launch:
+  - node:
+      package: foo_driver
+      executable: sensor_node
+      name: driver
+      output: screen
+      parameters:
+        - frame_id: front_sensor_link
+
+  - include:
+      file: other_package/launch/processing.launch.py
+```
+:::
+
+::: {.column .meta-description-explanation width="60%"}
+### Key fields
+
+::: {.highlight-box .meta-fields-box}
+- **Identity** — `name` and `namespace` define the component in the robot.
+- **Configuration** — `manufacturer`, `model` and `version` select the supported model.
+- **Location** — `parent_link`, `xyz` and `rpy` describe where the component is mounted on the robot.
+- **Launch** — nodes and included launch files define how its drivers and/or controllers are started.
+:::
+
+::: {.meta-description-key}
+The same structure is used for mobile bases, sensors, robotic arms and
+implements.
+:::
+:::
+:::
+
+## From meta-descriptions to runtime
+
+::: {.tirrex-story-intro}
+Each component-specific meta-bringup package reads the meta-description and
+generates the files required to integrate the component into the ROS 2 system.
+:::
+
+::: {.columns .artifact-generation-overview}
+::: {.column .artifact-generation-commands width="64%"}
+### Generation commands
+
+```bash
+ros2 run romea_<device_type>_meta_bringup generate_configuration_file.py \
+  meta_description_file_path:=/path/to/device.yaml > device.yaml
+
+ros2 run romea_<device_type>_meta_bringup generate_controllers_configuration_file.py \
+  meta_description_file_path:=/path/to/device.yaml \
+  mode:=live robot_namespace:=robot > controllers.yaml
+
+ros2 run romea_<device_type>_meta_bringup generate_urdf_description.py \
+  meta_description_file_path:=/path/to/device.yaml \
+  mode:=live robot_namespace:=robot > device.urdf
+
+ros2 run romea_<device_type>_meta_bringup generate_launch_file.py \
+  meta_description_file_path:=/path/to/device.yaml \
+  robot_namespace:=robot > device.launch.yaml
+```
+
+### Launch the component
+
+```bash
+ros2 launch romea_<device_type>_meta_bringup <device_type>.launch.py \
+  meta_description_file_path:=/path/to/device.yaml \
+  robot_namespace:=robot mode:=live
+```
+:::
+
+::: {.column .artifact-generation-results width="36%"}
+### Generated artifacts
+
+::: {.runtime-artifacts-box}
+- Parameter files
+- Controller configuration
+- URDF descriptions
+- ROS 2 launch files
+:::
+:::
+:::
+
+### TIRREX orchestration
+
+::: {.tirrex-artifact-orchestration}
+::: {.tirrex-artifact-step}
+**Compose**
+
+Build the complete robot URDF and `ros2_control` description.
+:::
+
+::: {.tirrex-artifact-step}
+**Delegate**
+
+Call the component-specific ROMEA meta-bringup launch files.
+:::
+
+::: {.tirrex-artifact-step}
+**Run**
+
+Start drivers, controllers or simulation bridges according to `mode`.
+:::
+:::
+
+## Mobile base configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    base.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: "base"
+launch:
+  - include:
+      file: "$(find-pkg-share romea_mobile_base_meta_bringup)/profile/robot.launch.py"
+      if: $(eval "'$(var mode)' == 'live'")
+configuration:
+  manufacturer: inrae
+  model: adap2e
+  version: one
+records:
+  joint_states: true
+  controller/odom: true
+  controller/odometry: true
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls mobile base profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects robot-specific bringup |
+| `configuration` | `version` | Selects robot variant (optional) |
+| `records` | topic flags | Base topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Supported base manufacturer | Model | Version |
+| --- | --- | --- |
+| `agilex` | `scout` | `mini` |
+| `agilex` | `hunter` | - |
+| `agreenculture` | `ceol` | - |
+| `clearpath_robotics` | `husky` | - |
+| `inrae` | `adap2e` | `one` or  `two`|
+| `inrae` | `robucat` | - |
+| `robotnik` | `campero` | `rubber` |
+| `sabi-agri` | `pom` | `4x4` |
+| `xlim` | `cinteo` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `robot` | Starts the selected mobile base |
+| `localisation_plugin` | Publishes odometry observations |
+
+:::
+
+:::
+:::
+
+## Device index configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      <name>.<type>.yaml
+```
+
+:::
+
+#### Device index
+
+```yaml
+remote_controller:
+  type: joystick
+  available_mode: all
+lms151:
+  type: lidar
+  available_mode: all
+septentrio:
+  type: gps
+  available_mode: all
+xsens:
+  type: imu
+  available_mode: all
+front:
+  type: camera
+  available_mode: none
+cultivator:
+  type: implement
+  available_mode: simulation
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| device entry | `<name>` | Device instance name |
+| device entry | `type` | Selects the device family |
+| device entry | `available_mode` | Selects launch modes |
+| device file | `<name>.<type>.yaml` | Matching meta-description file |
+
+:::
+
+::: {.config-table}
+
+| Supported device type | Configuration file |
+| --- | --- |
+| `joystick` | `<name>.joystick.yaml` |
+| `gps` | `<name>.gps.yaml` |
+| `imu` | `<name>.imu.yaml` |
+| `lidar` | `<name>.lidar.yaml` |
+| `camera` | `<name>.camera.yaml` |
+| `arm` | `<name>.arm.yaml` |
+| `implement` | `<name>.implement.yaml` |
+
+:::
+
+::: {.config-table}
+
+| Available mode | Meaning |
+| --- | --- |
+| `all` | Launched in every mode |
+| `live` | Real robot only |
+| `simulation` | Simulation modes only |
+| `simulation_gazebo` | Gazebo only |
+| `none` | Declared but disabled |
+
+:::
+
+:::
+:::
+
+## Joystick configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      remote_controller.joystick.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: "joystick"
+launch:
+  - include:
+      file: "$(find-pkg-share romea_joystick_meta_bringup)/profile/joy.launch.py"
+      if: $(eval "'$(var manufacturer)' != 'any'")
+  - include:
+      file: "$(find-pkg-share romea_joystick_meta_bringup)/profile/pynput_teleop.launch.py"
+      if: $(eval "'$(var manufacturer)' == 'any'")
+configuration:
+  manufacturer: microsoft
+  model: xbox
+  rate: 10
+records:
+  joy: true
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls joystick profiles/files |
+| `configuration` | `manufacturer` | Selects joystick family |
+| `configuration` | `model` | Selects joystick mapping |
+| `configuration` | `rate` | Expected joystick data frequency |
+| `records` | topic flags | Joystick topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `microsoft` | `xbox` | - |
+| `sony` | `dualshock4` | - |
+| `any` | `keyboard` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `joy` | Physical joystick driver |
+| `pynput_teleop` | Keyboard teleoperation |
+
+:::
+
+:::
+:::
+
+## GPS configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      septentrio.gps.yaml
+```
+:::
+
+#### Meta-description
+
+```yaml
+name: gps
+launch:
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/romea_gps_serial_driver.launch.py"
+      if: $(eval "'$(var mode)' == 'live'")
+  - include:
+      file: "$(find-pkg-share romea_gps_meta_bringup)/profile/gz_bridge.launch.py"
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
+configuration:
+  manufacturer: septentrio
+  model: asterx
+  rate: 10
+  dual_antenna: true
+location:
+  parent_link: "base_link"
+  xyz: [0.0, 0.0, 1.5] # m
+records:
+  nmea_sentence: true
+  gps_fix: false
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls launch profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects supported model |
+| `configuration` | `version` | Selects supported version (optional) |
+| `configuration` | `rate` | Expected GPS data frequency |
+| `configuration` | `dual_antenna` | Enables heading computation |
+| `location` | `xyz` | Antenna position relative to `base_link` |
+| `records` | topic flags | GPS topics saved in a bag |
+
+:::
+
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `septentrio` | `asterx` | - |
+| `ublox` | `evk_m8` | - |
+| `drotek` | `f9p` | - |
+| `ashtech` | `proflex_800` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `gz_bridge` | ROS2 Gazebo bridge |
+| `nmea_navsat_driver` | ROS2 Generic NMEA driver |
+| `ntrip_client` | ROS2 RTK corrections publisher |
+| `romea_gps_serial_driver` | ROMEA Serial receiver driver |
+| `romea_gps_tcp_driver` | ROMEA TCP receiver driver |
+| `localisation_plugin` | ROMEA localisation plugin |
+
+:::
+
+::: 
+:::
+
+
+## IMU configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      xsens.imu.yaml
+```
+:::
+
+#### Meta-description
+
+```yaml
+name: "imu"
+launch:
+  - include:
+      file: "$(find-pkg-share romea_imu_meta_bringup)/profile/xsens_driver.launch.py"
+      if: $(eval "'$(var mode)' == 'live'")
+  - include:
+      file: "$(find-pkg-share romea_imu_meta_bringup)/profile/gz_bridge.launch.py"
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
+configuration:
+  manufacturer: xsens
+  model: mti
+  rate: 100
+location:
+  parent_link: "base_link"
+  xyz: [0.0, 0.0, 0.7] # m
+  rpy: [0.0, 0.0, 0.0] # °
+records:
+  data: true
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls IMU profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects supported model |
+| `configuration` | `rate` | Expected IMU data frequency |
+| `location` | `xyz` | IMU position relative to `base_link` |
+| `location` | `rpy` | IMU orientation relative to `base_link` |
+| `records` | topic flags | IMU topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `xsens` | `mti` | - |
+| `xsens` | `mti_6xx` | - |
+| `unitree` | `b1` | - |
+| `gladiator` | `landmark_x0` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `xsens_driver` | Xsens IMU driver |
+| `bluespace_ai_xsens_mti_driver` | Alternative Xsens MTI driver |
+| `gz_bridge` | ROS2 Gazebo bridge |
+| `localisation_plugin` | ROMEA localisation plugin |
+
+:::
+
+:::
+:::
+
+## Lidar configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      lms151.lidar.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: "lidar"
+launch:
+  - include:
+      file: "$(find-pkg-share romea_lidar_meta_bringup)/profile/sick_scan_xd_lms1xx.launch.py"
+      arg:
+        - {name: ip,  value: "192.168.1.112"}
+        - {name: port, value: "2112"}
+  - include:
+      file: "$(find-pkg-share romea_lidar_meta_bringup)/profile/gz_bridge.launch.py"
+configuration:
+  manufacturer: sick
+  model: lms
+  version: 151
+  rate: 50
+  resolution: 0.5
+location:
+  parent_link: "base_link"
+  xyz: [2.02, 0.0, 0.34] # m
+  rpy: [0.0, 0.0, 0.0] # °
+records:
+  scan: true
+  cloud: false
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls lidar profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects supported model |
+| `configuration` | `version` | Selects supported version |
+| `configuration` | `rate` | Expected scan data frequency |
+| `configuration` | `resolution` | Angular scan resolution |
+| `location` | `xyz` | Lidar position relative to `base_link` |
+| `location` | `rpy` | Lidar orientation relative to `base_link` |
+| `records` | topic flags | Scan or cloud topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `sick` | `lms` | `1xx` |
+| `sick` | `mrs` | `1xxx`, `6xxx` |
+| `sick` | `tim` | `5xx` |
+| `ouster` | `os` | `1` |
+| `robosense` | `airy` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `sick_scan_xd_lms1xx` | SICK LMS 1xx driver |
+| `sick_scan_xd_mrs1xxx` | SICK MRS 1xxx driver |
+| `sick_scan_xd_mrs6xxx` | SICK MRS 6xxx driver |
+| `sick_scan_xd_tim5xx` | SICK TiM 5xx driver |
+| `ouster_ros_driver` | Ouster lidar driver |
+| `gz_bridge` | ROS2 Gazebo bridge |
+
+:::
+
+:::
+:::
+
+## Monocular camera configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      front.camera.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: "front_camera"
+launch:
+  - include:
+      file: "$(find-pkg-share romea_camera_meta_bringup)/profile/usb_cam.launch.py"
+      if: $(eval "'$(var mode)' == 'live'")
+  - include:
+      file: "$(find-pkg-share romea_camera_meta_bringup)/profile/gz_bridge.launch.py"
+      if: $(eval "'$(var mode)' == 'simulation_gazebo'")
+configuration:
+  manufacturer: axis
+  model: p1346
+  rate: 30
+  resolution: 1280x720
+location:
+  parent_link: "base_link"
+  xyz: [1.0, 0.0, 1.2] # m
+  rpy: [0.0, 0.0, 0.0] # °
+records:
+  camera_info: false
+  image_raw: true
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls camera profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects supported model |
+| `configuration` | `version` | Selects supported version (optional) |
+| `configuration` | `rate` | Expected image data frequency |
+| `configuration` | `resolution` | Image stream resolution |
+| `location` | `xyz` | Camera position relative to `base_link` |
+| `location` | `rpy` | Camera orientation relative to `base_link` |
+| `records` | topic flags | Image topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `intel` | `realsense` | `d435` |
+| `stereolabs` | `zed` | `1`, `2` |
+| `stereolabs` | `zed_x` | - |
+| `axis` | `p1346` | - |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `realsense2_camera` | Intel RealSense driver |
+| `usb_cam` | Generic USB/monocular camera driver |
+| `gz_bridge` | ROS2 Gazebo bridge |
+
+:::
+
+:::
+:::
+
+## Manipulator configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      ur10.arm.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: arm
+launch:
+  - include:
+      file: "$(find-pkg-share romea_arm_meta_bringup)/profile/ur.launch.py"
+      arg:
+        - {name: ip, value: "1.1.1.1"}
+configuration:
+  manufacturer: universal_robots
+  model: ur
+  version: "10"
+  control_rate: 500  # Hz
+  home_joint_positions:
+    shoulder_pan_joint: 0.0 # °
+    shoulder_lift_joint: -80 # °
+    elbow_joint: 0.0 # °
+    wrist_1_joint: -90 # °
+    wrist_2_joint: 0.0 # °
+    wrist_3_joint: 0.0 # °
+location:
+  parent_link: "base_link"
+  xyz: [2.02, 0.0, 0.54] # m
+  rpy: [0.0, 0.0, 0.0] # °
+records:
+  joint_states: false
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `launch` | included files | Calls manipulator profiles/files |
+| `configuration` | `manufacturer` | Selects supported manufacturer |
+| `configuration` | `model` | Selects supported arm family |
+| `configuration` | `version` | Selects arm variant |
+| `configuration` | `control_rate` | Controller update frequency |
+| `configuration` | `home_joint_p.` | Default joint startup pose |
+| `location` | `xyz` | Arm base position relative to `base_link` |
+| `location` | `rpy` | Arm base orientation relative to `base_link` |
+| `records` | topic flags | Arm topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Manufacturer | Model | Version |
+| --- | --- | --- |
+| `universal_robots` | `03`, `05`, `10` |  cb |
+| `universal_robots` | `03`, `05`, `07`, `10`, `12`, `16` |  e |
+| `universal_robots` | `8L`, `15`, `18`, `20`, `30` | `ur` |
+
+:::
+
+::: {.config-table}
+
+| Launch profile | Purpose |
+| --- | --- |
+| `ur` | Universal Robots driver/controllers |
+
+:::
+
+:::
+:::
+
+## Implement configuration
+
+::: {.columns .config-slide}
+::: {.column width="50%"}
+
+#### Configuration file
+
+::: {.config-path}
+
+```text
+config/
+  robot/
+    devices.yaml
+    devices/
+      cultivator.implement.yaml
+```
+
+:::
+
+#### Meta-description
+
+```yaml
+name: cultivator
+configuration:
+  model: cultivator
+  version: mounted
+location:
+  parent_link: "implement_link"
+  xyz: [0.0, 0.0, 0.0]
+  rpy: [0.0, 0.0, 0.0]
+records:
+  joint_states: false
+```
+:::
+
+::: {.column width="50%"}
+
+#### Configurable fields
+
+::: {.config-table}
+
+| Section | Field | Meaning |
+| --- | --- | --- |
+| `configuration` | `model` | Selects supported implement |
+| `configuration` | `version` | Selects implement variant |
+| `location` | `parent_link` | Robot link where it is attached |
+| `location` | `xyz` | Implement position relative to parent |
+| `location` | `rpy` | Implement orientation relative to parent |
+| `launch` | included files | Optional active implement profiles |
+| `records` | topic flags | Implement topics saved in a bag |
+
+:::
+
+::: {.config-table}
+
+| Supported implement | Version | Role |
+| --- | --- | --- |
+| `cultivator` | `mounted` | Passive mounted implement |
+
+:::
+
+::: {.config-table}
+
+| Generated artifact | Purpose |
+| --- | --- |
+| configuration | Compact implement parameters |
+| URDF fragment | Geometry and transforms |
+| launch file | Optional drivers/controllers |
+
+:::
+
+:::
+:::
+
+## Robot launch flow
+
+::: {.launch-flow-slide}
+
+![](img/03_robot/robot_launch_flow.svg){.robot-launch-flow-diagram}
+
+TIRREX starts from `base.yaml`, `devices.yaml` and the matching device files. It resolves the selected meta-descriptions, generates one robot meta-description, then delegates the runtime composition to ROMEA robot and simulation meta-bringup packages.
+
+:::

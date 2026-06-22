@@ -1,0 +1,46 @@
+---
+title: "Roboterrium"
+subtitle: "Experimental Infrastructure for Agricultural Robotics"
+date: "2026-04-29"
+date-format: long
+lang: fr
+author:
+  - name: "**Jean Laneurit**"
+    email: "jean.laneurit@inrae.fr"
+    url: https://roboterrium.hub.inrae.fr
+format:
+  inrae-revealjs:
+    auto-play-media: true
+    footer: "Roboterrium | INRAE | 2026"
+    theme: [custom.scss]
+    transition: none
+    history: false
+    navigation-mode: linear
+    code-overflow: wrap
+    code-line-numbers: false
+    mermaid:
+      theme: forest
+from: markdown+emoji
+---
+
+{{< include slides/01_roboterrium_overview.qmd >}}
+
+{{< include slides/02_configuring_tirrex_demo.qmd >}}
+
+{{< include slides/03_robot.qmd >}}
+
+{{< include slides/04_geodetic_reference.qmd >}}
+
+{{< include slides/05_localisation.qmd >}}
+
+{{< include slides/06_navigation.qmd >}}
+
+{{< include slides/07_teleoperation.qmd >}}
+
+{{< include slides/08_simulation.qmd >}}
+
+<!-- {{< include slides/08_deployment.qmd >}} -->
+
+<!-- {{< include slides/09_recording_replay.qmd >}} -->
+
+<!-- {{< include slides/10_conclusion.qmd >}} -->
