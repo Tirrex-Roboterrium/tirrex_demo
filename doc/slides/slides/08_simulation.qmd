@@ -82,7 +82,7 @@ selected backend. Missing entity pose fields default to `0.0`.
 ::: {.simulation-dual-flow}
 ::: {.simulation-flow-section}
 
-### Simulator launch flow
+<div class="simulation-flow-title">Simulator launch flow</div>
 ::: {.simulation-flow-figure}
 ![](img/08_simulation/simulator_launch_flow.svg){.simulation-dual-flow-diagram}
 :::
@@ -97,7 +97,7 @@ from its ROS package or simulator resource path.
 
 ::: {.simulation-flow-section}
 
-### Entity spawn flow
+<div class="simulation-flow-title">Entity spawn flow</div>
 ::: {.simulation-flow-figure}
 ![](img/08_simulation/entity_spawn_flow.svg){.simulation-dual-flow-diagram}
 :::

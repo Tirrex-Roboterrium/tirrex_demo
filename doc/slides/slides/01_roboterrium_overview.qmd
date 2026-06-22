@@ -1,8 +1,8 @@
 # Roboterrium overview
 
-## An experimental infrastructure for agricultural robotics
+## An experimental infrastructure for agricultural robotics {.infrastructure-slide}
 
-::: {.columns}
+<!-- ::: {.columns} -->
 ::: {.column width="55%"}
 Roboterrium is an INRAE experimental infrastructure dedicated to the study of robotic systems in agricultural environments.
 
@@ -10,16 +10,18 @@ Roboterrium is an INRAE experimental infrastructure dedicated to the study of ro
 Design, integrate and evaluate robotic solutions for the agroecological transition.
 :::
 
-- Modelling and simulation
-- Robotic platform integration
-- Field experiments at Montoldre
-- Shared infrastructure within EquipEx+ TIRREX
 :::
 
 ::: {.column width="45%"}
 ![](img/01_roboterrium_overview/roboterrium_flotte.jpg){fig-align="center" width="100%"}
+
+<!-- - Modelling and simulation
+- Robotic platform integration
+- Field experiments at Montoldre
+- Shared infrastructure within EquipEx+ TIRREX -->
+
 :::
-:::
+<!-- ::: -->
 
 ## Research challenges
 
@@ -97,7 +99,7 @@ An INRAE site of approximately **100 hectares** dedicated to agricultural roboti
 
 ## The Agrotechnopole {.terrain-slide}
 
-![](img/01_roboterrium_overview/terrains_controllés.bmp){fig-align="center" .terrain-image}
+![](img/01_roboterrium_overview/terrains_controllés.png){fig-align="center" .terrain-image}
 
 ::: {.highlight-box .terrain-points}
 ::: {.columns}

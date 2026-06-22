@@ -29,6 +29,15 @@
   border-radius: 0.3em;
 }
 
+.reveal .infrastructure-slide .column:last-of-type ul {
+  font-size: 0.72em;
+  line-height: 1.12em;
+}
+
+.reveal .infrastructure-slide .column:last-of-type li {
+  margin-bottom: 0.18em;
+}
+
 .reveal .tirrex-story-intro {
   margin: 0 0 0.25em;
   font-size: 0.58em;
@@ -712,6 +721,14 @@
   line-height: 1.1em;
 }
 
+@media print {
+  .reveal .simulation-overview {
+    display: flex !important;
+    height: 510px !important;
+    align-items: flex-start;
+  }
+}
+
 .reveal .columns h3 {
   color: #00a3a6;
   margin-bottom: 0.3em;
@@ -1120,10 +1137,11 @@
   padding: 0.08em 0;
 }
 
-.reveal .simulation-flow-figure > h3 {
+.reveal .simulation-flow-title {
   margin: 0 0 0.08em;
   color: #00a3a6;
   font-size: 0.46em;
+  font-weight: 700;
   text-align: left;
 }
 

@@ -30,7 +30,20 @@ Le fichier généré sera dans le dossier `public/`.
 ## 4. Exporter en PDF
 
 ```bash
-quarto render index.qmd --to inrae-revealjs-pdf
+./export-pdf.sh
 ```
 
-Selon votre installation, l’export PDF peut nécessiter Chromium/Chrome.
+Le PDF est généré dans :
+
+```text
+public/roboterrium-slides.pdf
+```
+
+Un autre chemin de sortie peut être fourni en argument :
+
+```bash
+./export-pdf.sh /tmp/roboterrium.pdf
+```
+
+L'export utilise le mode d'impression de Reveal.js et nécessite Chrome ou
+Chromium.
